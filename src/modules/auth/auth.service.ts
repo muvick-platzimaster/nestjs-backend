@@ -11,8 +11,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../user/schemas/user.schema';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
-// import passwordValidator from 'password-validator';
 const passwordValidator = require('password-validator');
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,8 +24,8 @@ export class AuthService {
     const user = await this.userModel.findOne({ email: signup.email });
     if (!user) {
       console.log('Registrando ', signup);
-      const isSecured = this.isValidPassword(signup.password);
-      if (!isSecured) {
+      const isSecure = this.isValidPassword(signup.password);
+      if (!isSecure) {
         throw new ConflictException('password_not_secured');
       }
       const salt = await genSalt(10);
@@ -38,7 +38,6 @@ export class AuthService {
   }
   async signIn(
     signin: SigninDto,
-    arg1: boolean,
   ): Promise<{
     accessToken: string;
     name: string;
@@ -46,11 +45,10 @@ export class AuthService {
   }> {
     const { password } = signin;
     const user = await this.userModel.findOne({ email: signin.email });
-    console.log('Usuario a autenticar?');
 
-    const isMath = await compare(password, user.password);
-    console.log('Debo de autenticar?', isMath);
-    if (!isMath) throw new UnauthorizedException('invalid_credentials');
+    const isMatch = await compare(password, user.password);
+    console.log('Debo de autenticar?', isMatch);
+    if (!isMatch) throw new UnauthorizedException('invalid_credentials');
     const payload: IJwtPayload = {
       email: user.email,
     };
@@ -64,11 +62,11 @@ export class AuthService {
   async signChange(signChange: SignChangeDto): Promise<boolean> {
     const user = await this.userModel.findOne({ email: signChange.email });
     if (!user) throw new NotFoundException('user_not_found');
-    const isMath = await compare(signChange.old, user.password);
-    if (!isMath) throw new UnauthorizedException('invalid_credentials');
+    const isMatch = await compare(signChange.old, user.password);
+    if (!isMatch) throw new UnauthorizedException('invalid_credentials');
     const salt = await genSalt(10);
-    const isSecured = this.isValidPassword(signChange.new);
-    if (!isSecured) {
+    const isSecure = this.isValidPassword(signChange.new);
+    if (!isSecure) {
       throw new ConflictException('password_not_secured');
     }
     user.password = await hash(signChange.new, salt);
@@ -94,13 +92,13 @@ export class AuthService {
       .has()
       .not()
       .spaces();
-    const isSecured = schema.validate(password);
-    if (!isSecured) {
+    const isSecure = schema.validate(password);
+    if (!isSecure) {
       console.log(
         'The password has not ',
         schema.validate(password, { list: true }),
       );
     }
-    return isSecured;
+    return isSecure;
   }
 }
