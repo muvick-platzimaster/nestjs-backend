@@ -26,7 +26,7 @@ export class AuthService {
       console.log('Registrando ', signup);
       const isSecure = this.isValidPassword(signup.password);
       if (!isSecure) {
-        throw new ConflictException('password_not_secured');
+        throw new ConflictException('password_not_secure');
       }
       const salt = await genSalt(10);
       signup.password = await hash(signup.password, salt);
@@ -86,7 +86,7 @@ export class AuthService {
       .has()
       .lowercase() // Must have lowercase letters
       .has()
-      .digits(2) // Must have at least 2 digits
+      .digits() // Must have at least 2 digits
       .has()
       .symbols() // Must have symbols
       .has()

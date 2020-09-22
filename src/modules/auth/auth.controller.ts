@@ -1,7 +1,13 @@
 import { Controller, Post, Body, Put } from '@nestjs/common';
 import { SignupDto, SigninDto, SignChangeDto } from './dto';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiUnauthorizedResponse,
+  ApiConflictResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 
 @ApiTags('The authentication')
 @Controller('auth')
@@ -9,6 +15,11 @@ export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
   @Post('signup')
+  @ApiConflictResponse({
+    status: 409,
+    description:
+      'Password not secure (password_not_secure) or Email already exists (email_already_exists)',
+  })
   async signUp(@Body() signup: SignupDto): Promise<void> {
     return this._authService.signUp(signup);
   }
@@ -20,6 +31,25 @@ export class AuthController {
   }
 
   @Post('signin')
+  @ApiUnauthorizedResponse({
+    description: 'Invalid Credentials (invalid_credentials)',
+  })
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: {
+          type: 'string',
+        },
+        name: {
+          type: 'string',
+        },
+        email: {
+          type: 'string',
+        },
+      },
+    },
+  })
   async signIn(
     @Body() signin: SigninDto,
   ): Promise<{
