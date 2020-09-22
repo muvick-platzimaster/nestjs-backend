@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { SignChangeDto, SigninDto, SignupDto } from './dto';
 import { compare, genSalt, hash } from 'bcryptjs';
@@ -23,29 +24,8 @@ export class AuthService {
     const user = await this.userModel.findOne({ email: signup.email });
     if (!user) {
       console.log('Registrando ', signup);
-      const schema = new passwordValidator();
-      schema
-        .is()
-        .min(10) // Minimum length 10
-        .is()
-        .max(20) // Maximum length 20
-        .has()
-        .uppercase() // Must have uppercase letters
-        .has()
-        .lowercase() // Must have lowercase letters
-        .has()
-        .digits(2) // Must have at least 2 digits
-        .has()
-        .symbols() // Must have symbols
-        .has()
-        .not()
-        .spaces();
-      const isSecured = schema.validate(signup.password);
+      const isSecured = this.isValidPassword(signup.password);
       if (!isSecured) {
-        console.log(
-          'The password has not ',
-          schema.validate(signup.password, { list: true }),
-        );
         throw new ConflictException('password_not_secured');
       }
       const salt = await genSalt(10);
@@ -70,7 +50,7 @@ export class AuthService {
 
     const isMath = await compare(password, user.password);
     console.log('Debo de autenticar?', isMath);
-    if (!isMath) throw new UnauthorizedException('Invalid Credentials');
+    if (!isMath) throw new UnauthorizedException('invalid_credentials');
     const payload: IJwtPayload = {
       email: user.email,
     };
@@ -81,7 +61,46 @@ export class AuthService {
       email: user.email,
     };
   }
-  signChange(signChange: SignChangeDto): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async signChange(signChange: SignChangeDto): Promise<boolean> {
+    const user = await this.userModel.findOne({ email: signChange.email });
+    if (!user) throw new NotFoundException('user_not_found');
+    const isMath = await compare(signChange.old, user.password);
+    if (!isMath) throw new UnauthorizedException('invalid_credentials');
+    const salt = await genSalt(10);
+    const isSecured = this.isValidPassword(signChange.new);
+    if (!isSecured) {
+      throw new ConflictException('password_not_secured');
+    }
+    user.password = await hash(signChange.new, salt);
+    await user.save();
+    return true;
+  }
+
+  private isValidPassword(password: string) {
+    const schema = new passwordValidator();
+    schema
+      .is()
+      .min(10) // Minimum length 10
+      .is()
+      .max(20) // Maximum length 20
+      .has()
+      .uppercase() // Must have uppercase letters
+      .has()
+      .lowercase() // Must have lowercase letters
+      .has()
+      .digits(2) // Must have at least 2 digits
+      .has()
+      .symbols() // Must have symbols
+      .has()
+      .not()
+      .spaces();
+    const isSecured = schema.validate(password);
+    if (!isSecured) {
+      console.log(
+        'The password has not ',
+        schema.validate(password, { list: true }),
+      );
+    }
+    return isSecured;
   }
 }
