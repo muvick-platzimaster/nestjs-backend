@@ -2,4 +2,7 @@ export enum ConfigEnum {
   PORT = 'PORT',
   DB_URI = 'DB_URI',
   JWT_SECRET = 'JWT_SECRET',
+  TMDB_URI = 'TMDB_URI',
+  TMDB_API_KEY_V3_AUTH = 'TMDB_API_KEY_V3_AUTH',
+  TMDB_API_KEY_V4_AUTH = 'TMDB_API_KEY_V4_AUTH',
 }
