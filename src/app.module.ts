@@ -8,9 +8,10 @@ import { UserModule } from './modules/user/user.module';
 import { MovieModule } from './modules/movie/movie.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
-  imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule],
+  imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule, CategoriesModule],
   controllers: [AppController],
   providers: [AppService],
 })
