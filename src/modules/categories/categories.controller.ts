@@ -6,8 +6,19 @@ export class CategoriesController {
   constructor(private _categoriesService: CategoriesService) {
   }
 
-  @Get()
-  async listCategories() {
+  @Get('/movies')
+  async moviesCategories() {
     return await this._categoriesService.list()
+  }
+
+
+  @Get('/series')
+  async seriesCategories() {
+    return await this._categoriesService.list()
+  }
+
+  @Get('/fill')
+  fillCategories () {
+    return this._categoriesService.getSeriesCategories()
   }
 }
