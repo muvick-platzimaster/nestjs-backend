@@ -8,17 +8,11 @@ export class CategoriesController {
 
   @Get('/movies')
   async moviesCategories() {
-    return await this._categoriesService.list()
+    return this._categoriesService.listMoviesCategories()
   }
-
 
   @Get('/series')
   async seriesCategories() {
-    return await this._categoriesService.list()
-  }
-
-  @Get('/fill')
-  fillCategories () {
-    return this._categoriesService.getSeriesCategories()
+    return this._categoriesService.listSeriesCategories()
   }
 }
