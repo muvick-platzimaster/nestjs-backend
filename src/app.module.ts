@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { ConfigEnum } from './config/config.keys';
@@ -12,8 +10,6 @@ import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule, CategoriesModule],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   static PORT: number | string;
