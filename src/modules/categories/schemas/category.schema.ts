@@ -5,8 +5,10 @@ import { Document } from 'mongoose';
 export class Category extends Document {
   @Prop({ required: true })
   externalId: number;
+
   @Prop({ required: true })
   name: string;
+
   @Prop({ required: true })
   type: string;
 }

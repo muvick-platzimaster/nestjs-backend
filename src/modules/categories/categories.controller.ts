@@ -7,7 +7,7 @@ export class CategoriesController {
   }
 
   @Get()
-  listCategories() {
-    return this._categoriesService.list()
+  async listCategories() {
+    return await this._categoriesService.list()
   }
 }
