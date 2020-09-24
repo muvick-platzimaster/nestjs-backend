@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { MovieService } from './movie.service';
 import { PageResultDto } from 'src/utils/page-result.dto';
 import { MovieResponseDto } from './dto/movie-response.dto';
@@ -9,6 +9,8 @@ import { MovieResponseDto } from './dto/movie-response.dto';
 export class MovieController {
   constructor(private readonly _movieService: MovieService) {}
   @Get()
+  @ApiQuery({ name: 'query', required: false })
+  @ApiQuery({ name: 'genre', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
   getAll(
     @Query('query') query?: string,
