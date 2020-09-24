@@ -7,9 +7,10 @@ import { MovieModule } from './modules/movie/movie.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
-  imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule, CategoriesModule],
+  imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule, CategoriesModule, UtilsModule],
 })
 export class AppModule {
   static PORT: number | string;
