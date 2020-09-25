@@ -5,29 +5,35 @@ import axios from 'axios';
 import { MovieFilterDto } from './dto/movie-filter.dto';
 import { plainToClass } from 'class-transformer';
 import { MovieReadDto } from './dto/movie-read.dto';
+import { UtilsService } from '../../utils/utils.service';
 
 @Injectable()
 export class MovieService {
-  TMDB_URL;
-  constructor(private readonly _configService: ConfigService) {
+  TMDB_URL: string;
+
+  constructor(
+    private readonly utilsService: UtilsService,
+    private readonly _configService: ConfigService) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
+
   async findUpcoming() {
     const result = await axios.get(`${this.TMDB_URL}/movie/upcoming`, {
-      headers: this.getHeaderRequest(),
+      headers: this.utilsService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
+
   async findTopRated() {
     const result = await axios.get(`${this.TMDB_URL}/movie/top_rated`, {
-      headers: this.getHeaderRequest(),
+      headers: this.utilsService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
 
   async findPopular() {
     const result = await axios.get(`${this.TMDB_URL}/movie/popular`, {
-      headers: this.getHeaderRequest(),
+      headers: this.utilsService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
@@ -38,19 +44,9 @@ export class MovieService {
     URL = `${URL}?${queryParams}`;
     console.log('La URL que se genera es ', URL);
     const result = await axios.get(`${URL}`, {
-      headers: this.getHeaderRequest(),
+      headers: this.utilsService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
-  }
-
-  private getHeaderRequest() {
-    const bearerToken = this.getBearerToken();
-    return { ...bearerToken };
-  }
-
-  private getBearerToken() {
-    const token = this._configService.get(ConfigEnum.TMDB_API_KEY_V4_AUTH);
-    return { Authorization: 'Bearer ' + token };
   }
 
   private buildQuery(filter: MovieFilterDto): string {
@@ -67,6 +63,7 @@ export class MovieService {
     }
     return;
   }
+
   private queryList(key: string, value: any[]) {
     if (value && value.length > 0) {
       return `${key}=${value.join(',')}`;
@@ -81,7 +78,9 @@ export class MovieService {
       .map(movie => plainToClass(MovieReadDto, movie));
     return {
       page: resultData.page,
+      // eslint-disable-next-line @typescript-eslint/camelcase
       total_results: resultData.total_results,
+      // eslint-disable-next-line @typescript-eslint/camelcase
       total_pages: resultData.total_pages,
       results: movieList,
     };
