@@ -23,6 +23,9 @@ export class MovieReadDto {
   readonly backdrop_path: string;
   @Expose()
   @ApiProperty()
+  readonly poster_path: string;
+  @Expose()
+  @ApiProperty()
   readonly original_language: string;
   @Expose()
   @ApiProperty()

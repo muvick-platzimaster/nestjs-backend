@@ -12,6 +12,4 @@ export class UserReadDto {
   plan: boolean;
   @Expose()
   createdAt: Date;
-  @Expose()
-  password: string;
 }

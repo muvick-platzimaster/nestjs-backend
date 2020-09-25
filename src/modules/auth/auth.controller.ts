@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put } from '@nestjs/common';
+import { Controller, Post, Body, Put, UseGuards } from '@nestjs/common';
 import { SignupDto, SigninDto, SignChangeDto } from './dto';
 import { AuthService } from './auth.service';
 import {
@@ -8,6 +8,7 @@ import {
   ApiConflictResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('The authentication')
 @Controller('auth')
@@ -25,6 +26,7 @@ export class AuthController {
   }
 
   @Put('sign-change')
+  @UseGuards(AuthGuard('jwt'))
   async signchange(@Body() signChange: SignChangeDto): Promise<boolean> {
     console.log(signChange);
     return this._authService.signChange(signChange);

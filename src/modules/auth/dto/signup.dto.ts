@@ -5,11 +5,11 @@ export class SignupDto {
   @IsString()
   @ApiProperty({ description: 'The username' })
   name: string;
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'email_required' })
   @IsString()
-  @ApiProperty({ description: 'The email' })
+  @ApiProperty({ description: 'The email', required: true })
   email: string;
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'password_required' })
   @IsString()
   @ApiProperty({
     description: 'The password',

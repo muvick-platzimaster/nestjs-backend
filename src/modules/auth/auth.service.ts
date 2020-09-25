@@ -45,7 +45,7 @@ export class AuthService {
   }> {
     const { password } = signin;
     const user = await this.userModel.findOne({ email: signin.email });
-
+    if (!user) throw new NotFoundException('invalid_credentials');
     const isMatch = await compare(password, user.password);
     console.log('Debo de autenticar?', isMatch);
     if (!isMatch) throw new UnauthorizedException('invalid_credentials');
@@ -64,11 +64,11 @@ export class AuthService {
     if (!user) throw new NotFoundException('user_not_found');
     const isMatch = await compare(signChange.old, user.password);
     if (!isMatch) throw new UnauthorizedException('invalid_credentials');
-    const salt = await genSalt(10);
     const isSecure = this.isValidPassword(signChange.new);
     if (!isSecure) {
       throw new ConflictException('password_not_secured');
     }
+    const salt = await genSalt(10);
     user.password = await hash(signChange.new, salt);
     await user.save();
     return true;
