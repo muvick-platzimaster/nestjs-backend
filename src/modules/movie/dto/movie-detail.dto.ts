@@ -1,5 +1,6 @@
 import { Expose, Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
 
 @Exclude()
 export class MovieDetailDto {
@@ -8,24 +9,10 @@ export class MovieDetailDto {
   readonly id: number;
   @Expose()
   @ApiProperty()
-  readonly adult: boolean;
-  @Expose()
-  @ApiProperty()
   readonly backdrop_path: string;
   @Expose()
   @ApiProperty()
   readonly poster_path: string;
-
-  @Expose()
-  @ApiProperty()
-  readonly popularity: number;
-  @Expose()
-  @ApiProperty()
-  readonly vote_count: number;
-  @Expose()
-  @ApiProperty()
-  readonly video: boolean;
-
   @Expose()
   @ApiProperty()
   readonly original_language: string;
@@ -33,18 +20,18 @@ export class MovieDetailDto {
   @ApiProperty()
   readonly original_title: string;
   @Expose()
-  @ApiProperty({ type: Number, isArray: true })
-  readonly genre_ids: number[];
-  @Expose()
-  @ApiProperty()
-  readonly title: string;
-  @Expose()
-  @ApiProperty()
-  readonly vote_average: number;
-  @Expose()
   @ApiProperty()
   readonly overview: string;
   @Expose()
   @ApiProperty()
+  readonly popularity: number;
+  @Expose()
+  @ApiProperty()
   readonly release_date: string;
+  @Expose()
+  @ApiProperty()
+  readonly runtime: number;
+  @Expose()
+  @ApiProperty({ type: GenreDto, isArray: true })
+  readonly genres: GenreDto[];
 }

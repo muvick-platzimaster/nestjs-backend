@@ -6,6 +6,7 @@ import { MovieFilterDto } from './dto/movie-filter.dto';
 import { plainToClass } from 'class-transformer';
 import { MovieReadDto } from './dto/movie-read.dto';
 import { UtilService } from '../../util/util.service';
+import { MovieDetailDto } from './dto/movie-detail.dto';
 
 @Injectable()
 export class MovieService {
@@ -30,11 +31,23 @@ export class MovieService {
     return this.call('movie/popular');
   }
 
+  findRecommendations(id: number) {
+    return this.call(`/movie/${id}/recommendations`);
+  }
+
   async findAll(filter: MovieFilterDto) {
     const queryParams = this.buildQuery(filter);
     let URL = `discover/movie?${queryParams}`;
     console.log('La URL que se genera es ', URL);
     return this.call(URL);
+  }
+
+  async findById(id: number) {
+    const result = await axios.get(`${this.TMDB_URL}/movie/${id}`, {
+      headers: this.utilsService.insertRequestHeaders(),
+    });
+    console.log('Detalle', result.data);
+    return plainToClass(MovieDetailDto, result.data);
   }
 
   private async call(url: string) {

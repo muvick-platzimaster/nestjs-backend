@@ -27,7 +27,7 @@ export class TvController {
     return this._tvService.findPopular();
   }
 
-  @Get('top_rated')
+  @Get('top-rated')
   @ApiOkResponse({ type: TvResponseDto })
   getTopRated(): Promise<TvResponseDto> {
     return this._tvService.findTopRated();

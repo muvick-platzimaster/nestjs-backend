@@ -1,8 +1,11 @@
 import { Expose } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class GenreDto {
   @Expose()
-  readonly id:number;
+  @ApiProperty()
+  readonly id: number;
   @Expose()
+  @ApiProperty()
   readonly name: string;
 }

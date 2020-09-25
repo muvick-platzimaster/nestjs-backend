@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TvReadDto } from './dto/tv-read.dto';
 import { plainToClass } from 'class-transformer';
 import { TvFilterDto } from './dto/tv-filter.dto';
-import { UtilsService } from 'src/utils/utils.service';
+import { UtilService } from 'src/util/util.service';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
@@ -11,7 +11,7 @@ export class TvService {
   private TMDB_URL: string;
 
   constructor(
-    private readonly utilsService: UtilsService,
+    private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
@@ -34,7 +34,7 @@ export class TvService {
 
   private async call(url: string) {
     const result = await axios.get(`${this.TMDB_URL}/${url}`, {
-      headers: this.utilsService.insertRequestHeaders(),
+      headers: this.utilService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
