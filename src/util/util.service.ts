@@ -3,7 +3,7 @@ import { ConfigService } from '../config/config.service';
 import { ConfigEnum } from '../config/config.keys';
 
 @Injectable()
-export class UtilsService {
+export class UtilService {
   constructor(private configService: ConfigService) {
   }
 

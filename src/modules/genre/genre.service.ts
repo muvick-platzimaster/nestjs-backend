@@ -2,14 +2,14 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
 import axios from 'axios';
 import { ConfigEnum } from '../../config/config.keys';
-import { UtilsService } from '../../utils/utils.service';
+import { UtilService } from '../../util/util.service';
 
 @Injectable()
 export class CategoriesService {
   private readonly TMDB_URL: string;
 
   constructor(
-    private utilsService: UtilsService,
+    private utilsService: UtilService,
     private httpService: HttpService, private _configService: ConfigService) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }

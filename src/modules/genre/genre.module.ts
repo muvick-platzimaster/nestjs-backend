@@ -4,11 +4,11 @@ import { CategoriesService } from './genre.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategorySchema } from './schemas/category.schema';
 import { ConfigModule } from '../../config/config.module';
-import { UtilsModule } from '../../utils/utils.module';
+import { UtilModule } from '../../util/util.module';
 
 @Module({
   imports: [ConfigModule, HttpModule, MongooseModule.forFeature([{ name: 'category', schema: CategorySchema }]),
-    UtilsModule
+    UtilModule
   ],
   controllers: [GenreController],
   providers: [CategoriesService],
