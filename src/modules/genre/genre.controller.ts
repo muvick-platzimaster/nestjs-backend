@@ -1,15 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
-import { CategoriesService } from './genre.service';
+import { GenreService } from './genre.service';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Categories')
+@ApiTags('Genres')
 @Controller('genre')
 export class GenreController {
-  constructor(private _categoriesService: CategoriesService) {
+  constructor(private _genreService: GenreService) {
   }
 
   @Get('/movies')
-  @ApiOperation({ summary: 'Retrieves movies genre (genres)' })
+  @ApiOperation({ summary: 'Retrieves movies genre' })
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -23,17 +23,17 @@ export class GenreController {
   })
 
   async moviesCategories() {
-    return this._categoriesService.listMoviesCategories();
+    return this._genreService.listMoviesCategories();
   }
 
   @Get('/series')
-  @ApiOperation({ summary: 'Retrieves series genre (genres)' })
+  @ApiOperation({ summary: 'Retrieves series genre' })
   @ApiResponse({
     status: 200,
     description: 'An array with all the series genre available in our API',
   })
 
   async seriesCategories() {
-    return this._categoriesService.listSeriesCategories();
+    return this._genreService.listSeriesCategories();
   }
 }

@@ -1,17 +1,17 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GenreController } from './genre.controller';
-import { CategoriesService } from './genre.service';
+import { GenreService } from './genre.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategorySchema } from './schemas/category.schema';
 import { ConfigModule } from '../../config/config.module';
 import { UtilModule } from '../../util/util.module';
 
 @Module({
-  imports: [ConfigModule, HttpModule, MongooseModule.forFeature([{ name: 'category', schema: CategorySchema }]),
-    UtilModule
+  imports: [ConfigModule, MongooseModule.forFeature([{ name: 'category', schema: CategorySchema }]),
+    UtilModule,
   ],
   controllers: [GenreController],
-  providers: [CategoriesService],
+  providers: [GenreService],
 })
 export class GenreModule {
 }
