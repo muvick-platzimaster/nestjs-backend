@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { GenreService } from './genre.service';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GenreResponseDto } from './dtos/genre-response.dto';
 
 @ApiTags('Genres')
 @Controller('genre')
@@ -22,8 +23,8 @@ export class GenreController {
     }
   })
 
-  async moviesCategories() {
-    return this._genreService.listMoviesCategories();
+  async moviesCategories(): Promise<GenreResponseDto> {
+    return this._genreService.findFromMovies();
   }
 
   @Get('/series')
@@ -33,7 +34,7 @@ export class GenreController {
     description: 'An array with all the series genre available in our API',
   })
 
-  async seriesCategories() {
-    return this._genreService.listSeriesCategories();
+  async seriesCategories(): Promise<GenreResponseDto> {
+    return this._genreService.findFromSeries();
   }
 }
