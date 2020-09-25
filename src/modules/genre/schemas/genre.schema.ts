@@ -13,4 +13,4 @@ export class Category extends Document {
   type: string;
 }
 
-export const CategorySchema = SchemaFactory.createForClass(Category);
+export const GenreSchema = SchemaFactory.createForClass(Category);

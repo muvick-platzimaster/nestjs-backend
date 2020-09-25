@@ -1,4 +1,4 @@
-import { PageResultDto } from 'src/utils/page-result.dto';
+import { PageResultDto } from 'src/util/page-result.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { MovieReadDto } from './movie-read.dto';
 
