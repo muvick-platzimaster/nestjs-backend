@@ -1,63 +1,45 @@
 import { Injectable } from '@nestjs/common';
+import { TvReadDto } from './dto/tv-read.dto';
+import { plainToClass } from 'class-transformer';
+import { TvFilterDto } from './dto/tv-filter.dto';
+import { UtilService } from 'src/util/util.service';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
-import { MovieFilterDto } from './dto/movie-filter.dto';
-import { plainToClass } from 'class-transformer';
-import { MovieReadDto } from './dto/movie-read.dto';
-import { UtilService } from '../../util/util.service';
-import { MovieDetailDto } from './dto/movie-detail.dto';
-
 @Injectable()
-export class MovieService {
+export class TvService {
   private TMDB_URL: string;
 
   constructor(
-    private readonly utilsService: UtilService,
+    private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
-  findUpcoming() {
-    return this.call('movie/upcoming');
-  }
-
   findTopRated() {
-    return this.call('movie/top_rated');
+    return this.call('tv/top_rated');
   }
 
   findPopular() {
-    return this.call('movie/popular');
+    return this.call('tv/popular');
   }
 
-  findRecommendations(id: number) {
-    return this.call(`/movie/${id}/recommendations`);
-  }
-
-  async findAll(filter: MovieFilterDto) {
+  async findAll(filter: TvFilterDto) {
     const queryParams = this.buildQuery(filter);
-    let URL = `discover/movie?${queryParams}`;
+    let URL = `discover/tv?${queryParams}`;
     console.log('La URL que se genera es ', URL);
     return this.call(URL);
   }
 
-  async findById(id: number) {
-    const result = await axios.get(`${this.TMDB_URL}/movie/${id}`, {
-      headers: this.utilsService.insertRequestHeaders(),
-    });
-    console.log('Detalle', result.data);
-    return plainToClass(MovieDetailDto, result.data);
-  }
-
   private async call(url: string) {
     const result = await axios.get(`${this.TMDB_URL}/${url}`, {
-      headers: this.utilsService.insertRequestHeaders(),
+      headers: this.utilService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
 
-  private buildQuery(filter: MovieFilterDto): string {
+  private buildQuery(filter: TvFilterDto): string {
     let query = [];
     query.push(this.queryString('query', filter.query));
     query.push(this.queryList('with_genres', filter.genres));
@@ -80,16 +62,16 @@ export class MovieService {
 
   private transformToDto(result) {
     const resultData = result.data;
-    const movieList = resultData.results
+    const tvList = resultData.results
       .filter(r => r.poster_path)
-      .map(movie => plainToClass(MovieReadDto, movie));
+      .map(tv => plainToClass(TvReadDto, tv));
     return {
       page: resultData.page,
       // eslint-disable-next-line @typescript-eslint/camelcase
       total_results: resultData.total_results,
       // eslint-disable-next-line @typescript-eslint/camelcase
       total_pages: resultData.total_pages,
-      results: movieList,
+      results: tvList,
     };
   }
 }
