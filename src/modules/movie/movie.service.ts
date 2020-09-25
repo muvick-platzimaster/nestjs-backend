@@ -5,14 +5,14 @@ import axios from 'axios';
 import { MovieFilterDto } from './dto/movie-filter.dto';
 import { plainToClass } from 'class-transformer';
 import { MovieReadDto } from './dto/movie-read.dto';
-import { UtilsService } from '../../utils/utils.service';
+import { UtilService } from '../../util/util.service';
 
 @Injectable()
 export class MovieService {
   TMDB_URL: string;
 
   constructor(
-    private readonly utilsService: UtilsService,
+    private readonly utilsService: UtilService,
     private readonly _configService: ConfigService) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }

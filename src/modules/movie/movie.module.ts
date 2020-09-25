@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MovieController } from './movie.controller';
 import { MovieService } from './movie.service';
 import { ConfigService } from 'src/config/config.service';
-import { UtilsModule } from '../../utils/utils.module';
+import { UtilModule } from '../../util/util.module';
 
 @Module({
-  imports: [UtilsModule],
+  imports: [UtilModule],
   controllers: [MovieController],
   providers: [MovieService, ConfigService],
 })
