@@ -6,11 +6,11 @@ import { UserModule } from './modules/user/user.module';
 import { MovieModule } from './modules/movie/movie.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { CategoriesModule } from './modules/categories/categories.module';
+import { GenreModule } from './modules/genre/genre.module';
 import { UtilsModule } from './utils/utils.module';
 
 @Module({
-  imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule, CategoriesModule, UtilsModule],
+  imports: [ConfigModule, UserModule, MovieModule, DatabaseModule, AuthModule, GenreModule, UtilsModule],
 })
 export class AppModule {
   static PORT: number | string;
