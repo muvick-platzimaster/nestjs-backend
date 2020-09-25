@@ -23,7 +23,7 @@ export class GenreController {
     }
   })
 
-  async moviesCategories(): Promise<GenreResponseDto> {
+  async getFromMovie(): Promise<GenreResponseDto> {
     return this._genreService.findFromMovies();
   }
 
@@ -34,7 +34,7 @@ export class GenreController {
     description: 'An array with all the series genre available in our API',
   })
 
-  async seriesCategories(): Promise<GenreResponseDto> {
+  async getFromSeries(): Promise<GenreResponseDto> {
     return this._genreService.findFromSeries();
   }
 }
