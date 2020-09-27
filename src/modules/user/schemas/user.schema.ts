@@ -15,6 +15,15 @@ export class User extends Document {
   @Prop({ default: false })
   plan: boolean;
 
+  @Prop({ required: true, default: false })
+  confirmed: boolean;
+
+  @Prop({ required: true })
+  email_sent_at: Date;
+
+  @Prop({ required: true })
+  pin: string
+
   @Prop({ default: Date.now() })
   createdAt: Date;
 }
