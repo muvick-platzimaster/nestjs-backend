@@ -11,7 +11,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../user/schemas/user.schema';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
-const passwordValidator = require('password-validator');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const PasswordValidator = require('password-validator')
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
       const salt = await genSalt(10);
       signup.password = await hash(signup.password, salt);
       const userCreated = new this.userModel(signup);
-      userCreated.save();
+      await userCreated.save();
       return;
     }
     throw new ConflictException('email_already_exists');
@@ -75,7 +76,7 @@ export class AuthService {
   }
 
   private isValidPassword(password: string) {
-    const schema = new passwordValidator();
+    const schema = new PasswordValidator();
     schema
       .is()
       .min(10) // Minimum length 10
