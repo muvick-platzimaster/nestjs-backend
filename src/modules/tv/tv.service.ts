@@ -6,6 +6,7 @@ import { UtilService } from 'src/util/util.service';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
+import { TvDetailDto } from './dto/tv-detail.dto';
 @Injectable()
 export class TvService {
   private TMDB_URL: string;
@@ -17,23 +18,33 @@ export class TvService {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
-  findTopRated() {
-    return this.call('tv/top_rated');
+  findTopRated(filter: TvFilterDto) {
+    return this.call('tv/top_rated', filter);
   }
 
-  findPopular() {
-    return this.call('tv/popular');
+  findPopular(filter: TvFilterDto) {
+    return this.call('tv/popular', filter);
   }
 
   async findAll(filter: TvFilterDto) {
-    const queryParams = this.buildQuery(filter);
-    let URL = `discover/tv?${queryParams}`;
-    console.log('La URL que se genera es ', URL);
-    return this.call(URL);
+    return this.call('discover/tv', filter);
   }
 
-  private async call(url: string) {
-    const result = await axios.get(`${this.TMDB_URL}/${url}`, {
+  async findById(filter: TvFilterDto) {
+    const queryParams = this.buildQuery(filter);
+    const result = await axios.get(
+      `${this.TMDB_URL}/tv/${filter.id}?${queryParams}`,
+      {
+        headers: this.utilService.insertRequestHeaders(),
+      },
+    );
+    console.log('Detail TV', result.data);
+    return plainToClass(TvDetailDto, result.data);
+  }
+
+  private async call(url: string, filter) {
+    const queryParams = this.buildQuery(filter);
+    const result = await axios.get(`${this.TMDB_URL}/${url}?${queryParams}`, {
       headers: this.utilService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
@@ -43,6 +54,7 @@ export class TvService {
     let query = [];
     query.push(this.queryString('query', filter.query));
     query.push(this.queryList('with_genres', filter.genres));
+    query.push(this.queryString('language', filter.language));
     return query.filter(Boolean).join('&');
   }
 
