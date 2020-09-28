@@ -24,6 +24,9 @@ export class User extends Document {
   @Prop({ required: true })
   pin: string
 
+  @Prop({ required: true, default: false })
+  suspended: boolean
+
   @Prop({ default: Date.now() })
   createdAt: Date;
 }
