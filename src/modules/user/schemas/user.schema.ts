@@ -15,17 +15,20 @@ export class User extends Document {
   @Prop({ default: false })
   plan: boolean;
 
-  @Prop({ required: true, default: false })
+  @Prop({ default: false })
   confirmed: boolean;
 
-  @Prop({ required: true })
-  email_sent_at: Date;
-
-  @Prop({ required: true })
-  pin: string
-
-  @Prop({ required: true, default: false })
+  @Prop({ default: false })
   suspended: boolean
+
+  @Prop()
+  email_confirmation_sent: boolean
+
+  @Prop()
+  email_confirmation_sent_at: Date;
+
+  @Prop()
+  pin: string
 
   @Prop({ default: Date.now() })
   createdAt: Date;

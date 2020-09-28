@@ -1,19 +1,19 @@
-import { Controller, Post, Body, Put, UseGuards } from '@nestjs/common';
-import { SignupDto, SigninDto, SignChangeDto } from './dto';
+import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
+import { SignChangeDto, SigninDto, SignupDto } from './dto';
 import { AuthService } from './auth.service';
 import {
-  ApiTags,
-  ApiResponse,
-  ApiUnauthorizedResponse,
   ApiConflictResponse,
   ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('The authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly _authService: AuthService) {}
+  constructor(private readonly _authService: AuthService) {
+  }
 
   @Post('signup')
   @ApiConflictResponse({

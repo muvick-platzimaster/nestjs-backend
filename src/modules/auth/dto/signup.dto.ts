@@ -18,4 +18,8 @@ export class SignupDto {
     required: true,
   })
   password: string;
+
+  pin: string
+
+
 }
