@@ -11,13 +11,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../user/schemas/user.schema';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const PasswordValidator = require('password-validator')
+import { UtilService } from '../../util/util.service';
+import PasswordValidator = require('password-validator');
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly _jwtService: JwtService,
+    private readonly _utilService: UtilService,
     @InjectModel('user') private userModel: Model<User>,
   ) {}
 
@@ -31,6 +32,9 @@ export class AuthService {
       }
       const salt = await genSalt(10);
       signup.password = await hash(signup.password, salt);
+      // TODO implement send email
+      await this._utilService.sendEmail()
+      // TODO generate PIN
       const userCreated = new this.userModel(signup);
       await userCreated.save();
       return;

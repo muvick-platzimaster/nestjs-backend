@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from 'src/config/config.module';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
+import { UtilModule } from '../../util/util.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ConfigEnum } from 'src/config/config.keys';
         };
       },
     }),
+    UtilModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, ConfigService],
