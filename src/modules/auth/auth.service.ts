@@ -157,7 +157,7 @@ export class AuthService {
         const messageSent = await sgMail.send(message);
         if (messageSent[0].statusCode === 202) {
           user.emailSent = true;
-          user.expirationDate = moment().add(3, 'days').format('DD MM YYYY');
+          user.expirationDate = moment().add(3, 'days').format();
           user.save();
         }
       } catch (err) {
@@ -169,9 +169,9 @@ export class AuthService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async suspendService () {
-    const users = await this.userModel.find({ confirmed: false, pin: null})
+    const users = await this.userModel.find({ confirmed: false, emailSent: true })
     for (const user of users) {
-      const expired = moment(user.expirationDate).isBefore(moment().format('DD MM YYYY'))
+      const expired = moment(user.expirationDate).isBefore(moment().format())
       if (expired) {
         user.suspended = true
         await user.save()
