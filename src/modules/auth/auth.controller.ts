@@ -2,8 +2,8 @@ import { Body, Controller, HttpCode, Post, Put, UseGuards } from '@nestjs/common
 import { SignChangeDto, SigninDto, SignupDto } from './dto';
 import { AuthService } from './auth.service';
 import {
-  ApiConflictResponse,
-  ApiOkResponse,
+  ApiConflictResponse, ApiInternalServerErrorResponse,
+  ApiOkResponse, ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -69,6 +69,8 @@ export class AuthController {
 
   @Post('confirm')
   @HttpCode(200)
+  @ApiOkResponse({ description: 'It happens when PINs matched'})
+  @ApiConflictResponse({ description: 'It happens when PINs does not match'})
   @UseGuards(AuthGuard('jwt'))
   confirm(@Body() pin: PinConfirmationDto): Promise<AuthConfirmedDto> {
     return this._authService.confirm(pin);
@@ -76,6 +78,9 @@ export class AuthController {
 
   @Post('confirm/resend')
   @HttpCode(200)
+  @ApiOkResponse({ description: 'It happens when the pin was re-sent'})
+  @ApiInternalServerErrorResponse({ description: 'It happens when any user is matched with the' +
+      ' email sent'})
   @UseGuards(AuthGuard('jwt'))
   resendPin(@Body() email: AuthResendCodeDto): Promise<boolean> {
     return this._authService.resendPin(email);
