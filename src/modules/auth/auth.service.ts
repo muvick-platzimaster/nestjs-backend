@@ -160,7 +160,7 @@ export class AuthService {
     const message = {
       to: '',
       from: 'me@axelespinosadev.com',
-      subject: 'Muvick Verification Code',
+      subject: '',
       html: '',
     };
 
@@ -169,8 +169,10 @@ export class AuthService {
 
       if (user.language === 'es') {
         message.html = generateVerificationCodeTemplate(user.name, user.pin);
+        message.subject = 'Muvick Código de verificación'
       } else if (user.language === 'en') {
         message.html = generateVerificationCodeTemplateEnglish(user.name, user.pin);
+        message.subject = 'Muvick Verification Code'
       }
 
       try {

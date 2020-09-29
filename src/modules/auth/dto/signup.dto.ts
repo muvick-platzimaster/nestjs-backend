@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmpty, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class SignupDto {
   @IsNotEmpty()
@@ -24,7 +24,6 @@ export class SignupDto {
     description: 'Languages available: es (spanish), en (English)',
     required: false
   })
-  @IsString()
-  language: string
 
+  language:string
 }
