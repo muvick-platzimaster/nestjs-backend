@@ -25,7 +25,7 @@ export class User extends Document {
   email_confirmation_sent: boolean;
 
   @Prop()
-  email_confirmation_sent_at: Date;
+  email_confirmation_sent_at: number;
 
   @Prop()
   pin: string;

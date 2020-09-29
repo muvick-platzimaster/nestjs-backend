@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GenreModule } from './modules/genre/genre.module';
 import { UtilModule } from './util/util.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UtilModule } from './util/util.module';
     AuthModule,
     GenreModule,
     UtilModule,
+    ScheduleModule.forRoot()
   ],
 })
 export class AppModule {

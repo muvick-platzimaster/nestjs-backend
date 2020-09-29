@@ -1,8 +1,8 @@
 import {
-  Injectable,
   ConflictException,
-  UnauthorizedException,
+  Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { SignChangeDto, SigninDto, SignupDto } from './dto';
 import { compare, genSalt, hash } from 'bcryptjs';
@@ -12,16 +12,23 @@ import { Model } from 'mongoose';
 import { User } from '../user/schemas/user.schema';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
 import { UtilService } from '../../util/util.service';
+import { generatePin } from 'generate-pin';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { ConfigEnum } from '../../config/config.keys';
+import { ConfigService } from '../../config/config.service';
 import PasswordValidator = require('password-validator');
-import { generatePin } from 'generate-pin'
+import sgMail = require('@sendgrid/mail');
+import { generateVerificationCodeTemplate } from './templates/verificationCode-email';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly _jwtService: JwtService,
     private readonly _utilService: UtilService,
+    private readonly _configService: ConfigService,
     @InjectModel('user') private userModel: Model<User>,
-  ) {}
+  ) {
+  }
 
   async signUp(signup: SignupDto): Promise<void> {
     const user = await this.userModel.findOne({ email: signup.email });
@@ -35,12 +42,13 @@ export class AuthService {
       signup.password = await hash(signup.password, salt);
       const userCreated = new this.userModel(signup);
       // Generates a PIN to confirm the user later
-      userCreated.pin = generatePin()[0]
+      userCreated.pin = generatePin()[0];
       await userCreated.save();
       return;
     }
     throw new ConflictException('email_already_exists');
   }
+
   async signIn(
     signin: SigninDto,
   ): Promise<{
@@ -64,6 +72,7 @@ export class AuthService {
       email: user.email,
     };
   }
+
   async signChange(signChange: SignChangeDto): Promise<boolean> {
     const user = await this.userModel.findOne({ email: signChange.email });
     if (!user) throw new NotFoundException('user_not_found');
@@ -106,4 +115,34 @@ export class AuthService {
     }
     return isSecure;
   }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  async sendVerificationEmail() {
+    sgMail.setApiKey(this._configService.get(ConfigEnum.SENDGRID_API_KEY));
+    const unsentVerificationEmails = await this.userModel.find({ email_confirmation_sent: false });
+    const message = {
+      to: '',
+      from: 'me@axelespinosadev.com',
+      subject: 'Muvick Verification Code',
+      html: '',
+    };
+
+    for (const user of unsentVerificationEmails) {
+      message.to = user.email
+      message.html = generateVerificationCodeTemplate(user.name, user.pin)
+      try {
+        const messageSent = await sgMail.send(message);
+        if (messageSent[0].statusCode === 202) {
+          user.email_confirmation_sent = true
+          user.email_confirmation_sent_at = Date.now()
+          user.save()
+        }
+      } catch (err) {
+        console.error(`[Error Verification Code] ${err.mediaDevices}`);
+        console.error(err.stack)
+      }
+    }
+  }
+
+
 }

@@ -29,7 +29,8 @@ import { UtilModule } from '../../util/util.module';
         };
       },
     }),
-    UtilModule
+    UtilModule,
+    ConfigModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, ConfigService],
