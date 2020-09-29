@@ -19,6 +19,7 @@ import { ConfigService } from '../../config/config.service';
 import PasswordValidator = require('password-validator');
 import sgMail = require('@sendgrid/mail');
 import { generateVerificationCodeTemplate } from './templates/verificationCode-email';
+import moment = require('moment')
 
 @Injectable()
 export class AuthService {
@@ -119,7 +120,7 @@ export class AuthService {
   @Cron(CronExpression.EVERY_MINUTE)
   async sendVerificationEmail() {
     sgMail.setApiKey(this._configService.get(ConfigEnum.SENDGRID_API_KEY));
-    const unsentVerificationEmails = await this.userModel.find({ email_confirmation_sent: false });
+    const unsentVerificationEmails = await this.userModel.find({ emailSent: false });
     const message = {
       to: '',
       from: 'me@axelespinosadev.com',
@@ -133,12 +134,12 @@ export class AuthService {
       try {
         const messageSent = await sgMail.send(message);
         if (messageSent[0].statusCode === 202) {
-          user.email_confirmation_sent = true
-          user.email_confirmation_sent_at = Date.now()
+          user.emailSent = true
+          user.expirationDate = moment().add(3, 'days').format('DD MM YYYY')
           user.save()
         }
       } catch (err) {
-        console.error(`[Error Verification Code] ${err.mediaDevices}`);
+        console.error(`[Error Sending Verification Code] ${err.mediaDevices}`);
         console.error(err.stack)
       }
     }

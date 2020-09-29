@@ -22,10 +22,10 @@ export class User extends Document {
   suspended: boolean;
 
   @Prop({ default: false })
-  email_confirmation_sent: boolean;
+  emailSent: boolean;
 
   @Prop()
-  email_confirmation_sent_at: number;
+  expirationDate: string;
 
   @Prop()
   pin: string;
