@@ -8,6 +8,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { PinConfirmationDto } from './dto/pin-confirmation.dto';
+import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
 
 @ApiTags('The authentication')
 @Controller('auth')
@@ -52,6 +54,7 @@ export class AuthController {
       },
     },
   })
+
   async signIn(
     @Body() signin: SigninDto,
   ): Promise<{
@@ -61,5 +64,11 @@ export class AuthController {
   }> {
     console.log('El usuario a autenticar es =>>>>>>>', signin);
     return this._authService.signIn(signin);
+  }
+
+  @Post('confirm')
+  @UseGuards(AuthGuard('jwt'))
+  confirm(@Body() pin: PinConfirmationDto): Promise<AuthConfirmedDto> {
+    return this._authService.confirm(pin)
   }
 }

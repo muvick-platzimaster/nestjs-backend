@@ -16,10 +16,14 @@ import { generatePin } from 'generate-pin';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ConfigEnum } from '../../config/config.keys';
 import { ConfigService } from '../../config/config.service';
+import { generateVerificationCodeTemplate } from './templates/verificationCode-email';
+import { PinConfirmationDto } from './dto/pin-confirmation.dto';
+import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
+import { plainToClass } from 'class-transformer';
 import PasswordValidator = require('password-validator');
 import sgMail = require('@sendgrid/mail');
-import { generateVerificationCodeTemplate } from './templates/verificationCode-email';
-import moment = require('moment')
+import moment = require('moment');
+import exp = require('constants');
 
 @Injectable()
 export class AuthService {
@@ -117,6 +121,24 @@ export class AuthService {
     return isSecure;
   }
 
+  async confirm(pin: PinConfirmationDto): Promise<AuthConfirmedDto> {
+    const user = await this.userModel.findOne({ email: pin.email });
+
+    if (user.confirmed) {
+      return plainToClass(AuthConfirmedDto, { email: pin.email, confirmed: true });
+    }
+
+    const pinMatched = user.pin === pin.pin;
+    if (pinMatched) {
+      user.confirmed = true;
+      user.expirationDate = null;
+      user.pin = null;
+      await user.save();
+      return plainToClass(AuthConfirmedDto, { email: pin.email, confirmed: true });
+    }
+    throw new ConflictException('pin_not_match')
+  }
+
   @Cron(CronExpression.EVERY_MINUTE)
   async sendVerificationEmail() {
     sgMail.setApiKey(this._configService.get(ConfigEnum.SENDGRID_API_KEY));
@@ -129,21 +151,32 @@ export class AuthService {
     };
 
     for (const user of unsentVerificationEmails) {
-      message.to = user.email
-      message.html = generateVerificationCodeTemplate(user.name, user.pin)
+      message.to = user.email;
+      message.html = generateVerificationCodeTemplate(user.name, user.pin);
       try {
         const messageSent = await sgMail.send(message);
         if (messageSent[0].statusCode === 202) {
-          user.emailSent = true
-          user.expirationDate = moment().add(3, 'days').format('DD MM YYYY')
-          user.save()
+          user.emailSent = true;
+          user.expirationDate = moment().add(3, 'days').format('DD MM YYYY');
+          user.save();
         }
       } catch (err) {
         console.error(`[Error Sending Verification Code] ${err.mediaDevices}`);
-        console.error(err.stack)
+        console.error(err.stack);
       }
     }
   }
 
+  @Cron(CronExpression.EVERY_MINUTE)
+  async suspendService () {
+    const users = await this.userModel.find({ confirmed: false, pin: null})
+    for (const user of users) {
+      const expired = moment(user.expirationDate).isBefore(moment().format('DD MM YYYY'))
+      if (expired) {
+        user.suspended = true
+        await user.save()
+      }
+    }
+  }
 
 }
