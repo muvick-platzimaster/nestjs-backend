@@ -13,6 +13,7 @@ import { User } from '../user/schemas/user.schema';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
 import { UtilService } from '../../util/util.service';
 import PasswordValidator = require('password-validator');
+import { generatePin } from 'generate-pin'
 
 @Injectable()
 export class AuthService {
@@ -32,10 +33,9 @@ export class AuthService {
       }
       const salt = await genSalt(10);
       signup.password = await hash(signup.password, salt);
-      // TODO implement send email
-      await this._utilService.sendEmail()
-      // TODO generate PIN
       const userCreated = new this.userModel(signup);
+      // Generates a PIN to confirm the user later
+      userCreated.pin = generatePin()[0]
       await userCreated.save();
       return;
     }

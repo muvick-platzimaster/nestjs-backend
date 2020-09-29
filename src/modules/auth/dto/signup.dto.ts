@@ -17,9 +17,7 @@ export class SignupDto {
     maxLength: 20,
     required: true,
   })
+
   password: string;
-
-  pin: string
-
 
 }

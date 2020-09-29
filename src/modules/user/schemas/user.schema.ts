@@ -19,16 +19,16 @@ export class User extends Document {
   confirmed: boolean;
 
   @Prop({ default: false })
-  suspended: boolean
+  suspended: boolean;
 
-  @Prop()
-  email_confirmation_sent: boolean
+  @Prop({ default: false })
+  email_confirmation_sent: boolean;
 
   @Prop()
   email_confirmation_sent_at: Date;
 
   @Prop()
-  pin: string
+  pin: string;
 
   @Prop({ default: Date.now() })
   createdAt: Date;

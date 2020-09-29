@@ -33,6 +33,7 @@
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
+    "generate-pin": "^1.0.5",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.6",
     "passport": "^0.4.1",
