@@ -11,46 +11,57 @@ export class MovieController {
   @Get()
   @ApiQuery({ name: 'query', required: false })
   @ApiQuery({ name: 'genre', required: false })
+  @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
   getAll(
     @Query('query') query?: string,
     @Query('genre') genre?: number,
+    @Query('language') language?: string,
   ): Promise<MovieResponseDto> {
     return this._movieService.findAll({
       query,
       genres: [genre],
+      language,
     });
   }
 
   @Get(':id/detail')
+  @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieDetailDto })
-  getById(@Param('id') id: number) {
+  getById(@Param('id') id: number, @Query('language') language?: string) {
     console.log('Buscar una pelicula', id);
-    return this._movieService.findById(id);
+    return this._movieService.findById({ id, language });
   }
 
   @Get(':id/recommendations')
+  @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
-  getRecommendations(@Param('id') id: number) {
+  getRecommendations(
+    @Param('id') id: number,
+    @Query('language') language?: string,
+  ) {
     console.log('Buscar una pelicula', id);
-    return this._movieService.findRecommendations(id);
+    return this._movieService.findRecommendations({ id, language });
   }
 
   @Get('popular')
+  @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
-  getPopular(): Promise<MovieResponseDto> {
-    return this._movieService.findPopular();
+  getPopular(@Query('language') language?: string): Promise<MovieResponseDto> {
+    return this._movieService.findPopular({ language });
   }
 
   @Get('top-rated')
+  @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
-  getTopRated(): Promise<MovieResponseDto> {
-    return this._movieService.findTopRated();
+  getTopRated(@Query('language') language?: string): Promise<MovieResponseDto> {
+    return this._movieService.findTopRated({ language });
   }
 
   @Get('upcoming')
+  @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
-  getUpcoming(): Promise<MovieResponseDto> {
-    return this._movieService.findUpcoming();
+  getUpcoming(@Query('language') language?: string): Promise<MovieResponseDto> {
+    return this._movieService.findUpcoming({ language });
   }
 }

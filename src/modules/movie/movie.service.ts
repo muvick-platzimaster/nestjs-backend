@@ -13,54 +13,59 @@ export class MovieService {
   private TMDB_URL: string;
 
   constructor(
-    private readonly utilsService: UtilService,
+    private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
-  findUpcoming() {
-    return this.call('movie/upcoming');
+  findUpcoming(filter?: MovieFilterDto) {
+    return this.call('movie/upcoming', filter);
   }
 
-  findTopRated() {
-    return this.call('movie/top_rated');
+  findTopRated(filter?: MovieFilterDto) {
+    return this.call('movie/top_rated', filter);
   }
 
-  findPopular() {
-    return this.call('movie/popular');
+  findPopular(filter?: MovieFilterDto) {
+    return this.call('movie/popular', filter);
   }
 
-  findRecommendations(id: number) {
-    return this.call(`/movie/${id}/recommendations`);
+  findRecommendations(filter?: MovieFilterDto) {
+    return this.call(`/movie/${filter.id}/recommendations`, filter);
   }
 
   async findAll(filter: MovieFilterDto) {
-    const queryParams = this.buildQuery(filter);
-    let URL = `discover/movie?${queryParams}`;
-    console.log('La URL que se genera es ', URL);
-    return this.call(URL);
+    return this.call('discover/movie', filter);
   }
 
-  async findById(id: number) {
-    const result = await axios.get(`${this.TMDB_URL}/movie/${id}`, {
-      headers: this.utilsService.insertRequestHeaders(),
-    });
-    console.log('Detalle', result.data);
+  async findById(filter: MovieFilterDto) {
+    const queryParams = this.buildQuery(filter);
+    const result = await axios.get(
+      `${this.TMDB_URL}/movie/${filter.id}?${queryParams}`,
+      {
+        headers: this.utilService.insertRequestHeaders(),
+      },
+    );
+    console.log('Detail Movie', result.data);
     return plainToClass(MovieDetailDto, result.data);
   }
 
-  private async call(url: string) {
-    const result = await axios.get(`${this.TMDB_URL}/${url}`, {
-      headers: this.utilsService.insertRequestHeaders(),
+  private async call(url: string, filter) {
+    const queryParams = this.buildQuery(filter);
+    const result = await axios.get(`${this.TMDB_URL}/${url}?${queryParams}`, {
+      headers: this.utilService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
 
   private buildQuery(filter: MovieFilterDto): string {
     let query = [];
-    query.push(this.queryString('query', filter.query));
-    query.push(this.queryList('with_genres', filter.genres));
+    if (filter) {
+      query.push(this.queryString('query', filter.query));
+      query.push(this.queryList('with_genres', filter.genres));
+      query.push(this.queryString('language', filter.language));
+    }
     return query.filter(Boolean).join('&');
   }
 
