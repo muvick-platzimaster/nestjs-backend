@@ -9,12 +9,14 @@ import { AuthModule } from './modules/auth/auth.module';
 import { GenreModule } from './modules/genre/genre.module';
 import { UtilModule } from './util/util.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TvModule } from './modules/tv/tv.module';
 
 @Module({
   imports: [
     ConfigModule,
     UserModule,
     MovieModule,
+    TvModule,
     DatabaseModule,
     AuthModule,
     GenreModule,
