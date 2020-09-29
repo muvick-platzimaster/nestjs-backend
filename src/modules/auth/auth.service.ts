@@ -17,7 +17,7 @@ import { generatePin } from 'generate-pin';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ConfigEnum } from '../../config/config.keys';
 import { ConfigService } from '../../config/config.service';
-import { generateVerificationCodeTemplate } from './templates/verificationCode-email';
+import { generateVerificationCodeTemplate } from './templates/verificationCode-email-spanish';
 import { PinConfirmationDto } from './dto/pin-confirmation.dto';
 import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
 import { plainToClass } from 'class-transformer';
