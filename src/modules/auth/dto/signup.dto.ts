@@ -20,4 +20,11 @@ export class SignupDto {
 
   password: string;
 
+  @ApiProperty({
+    description: 'Languages available: es (spanish), en (English)',
+    required: false
+  })
+  @IsString()
+  language: string
+
 }
