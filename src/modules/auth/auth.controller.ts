@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Put, UseGuards } from '@nestjs/common';
 import { SignChangeDto, SigninDto, SignupDto } from './dto';
 import { AuthService } from './auth.service';
 import {
@@ -10,6 +10,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { PinConfirmationDto } from './dto/pin-confirmation.dto';
 import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
+import { AuthResendCodeDto } from './dto/auth-resend-code.dto';
 
 @ApiTags('The authentication')
 @Controller('auth')
@@ -67,8 +68,16 @@ export class AuthController {
   }
 
   @Post('confirm')
+  @HttpCode(200)
   @UseGuards(AuthGuard('jwt'))
   confirm(@Body() pin: PinConfirmationDto): Promise<AuthConfirmedDto> {
-    return this._authService.confirm(pin)
+    return this._authService.confirm(pin);
+  }
+
+  @Post('confirm/resend')
+  @HttpCode(200)
+  @UseGuards(AuthGuard('jwt'))
+  resendPin(@Body() email: AuthResendCodeDto): Promise<boolean> {
+    return this._authService.resendPin(email);
   }
 }

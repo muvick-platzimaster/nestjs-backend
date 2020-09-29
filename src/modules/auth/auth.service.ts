@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -20,10 +21,10 @@ import { generateVerificationCodeTemplate } from './templates/verificationCode-e
 import { PinConfirmationDto } from './dto/pin-confirmation.dto';
 import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
 import { plainToClass } from 'class-transformer';
+import { AuthResendCodeDto } from './dto/auth-resend-code.dto';
 import PasswordValidator = require('password-validator');
 import sgMail = require('@sendgrid/mail');
 import moment = require('moment');
-import exp = require('constants');
 
 @Injectable()
 export class AuthService {
@@ -136,7 +137,19 @@ export class AuthService {
       await user.save();
       return plainToClass(AuthConfirmedDto, { email: pin.email, confirmed: true });
     }
-    throw new ConflictException('pin_not_match')
+    throw new ConflictException('pin_not_match');
+  }
+
+  async resendPin(email: AuthResendCodeDto): Promise<boolean> {
+    const user = await this.userModel.findOne({ email: email.email });
+    if (user) {
+      user.emailSent = false;
+      // Generates a PIN to confirm the user later
+      user.pin = generatePin()[0];
+      await user.save();
+      return true;
+    }
+    throw new InternalServerErrorException();
   }
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -168,13 +181,13 @@ export class AuthService {
   }
 
   @Cron(CronExpression.EVERY_MINUTE)
-  async suspendService () {
-    const users = await this.userModel.find({ confirmed: false, emailSent: true })
+  async suspendService() {
+    const users = await this.userModel.find({ confirmed: false, emailSent: true });
     for (const user of users) {
-      const expired = moment(user.expirationDate).isBefore(moment().format())
+      const expired = moment(user.expirationDate).isBefore(moment().format());
       if (expired) {
-        user.suspended = true
-        await user.save()
+        user.suspended = true;
+        await user.save();
       }
     }
   }
