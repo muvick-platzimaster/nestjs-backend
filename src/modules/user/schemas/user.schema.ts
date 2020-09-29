@@ -30,6 +30,9 @@ export class User extends Document {
   @Prop()
   pin: string;
 
+  @Prop({ default: 'es' })
+  language: string
+
   @Prop({ default: Date.now() })
   createdAt: Date;
 }

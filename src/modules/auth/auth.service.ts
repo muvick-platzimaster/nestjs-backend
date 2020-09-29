@@ -25,6 +25,7 @@ import { AuthResendCodeDto } from './dto/auth-resend-code.dto';
 import PasswordValidator = require('password-validator');
 import sgMail = require('@sendgrid/mail');
 import moment = require('moment');
+import { generateVerificationCodeTemplateEnglish } from './templates/verificationCode-email-english';
 
 @Injectable()
 export class AuthService {
@@ -165,7 +166,13 @@ export class AuthService {
 
     for (const user of unsentVerificationEmails) {
       message.to = user.email;
-      message.html = generateVerificationCodeTemplate(user.name, user.pin);
+
+      if (user.language === 'es') {
+        message.html = generateVerificationCodeTemplate(user.name, user.pin);
+      } else if (user.language === 'en') {
+        message.html = generateVerificationCodeTemplateEnglish(user.name, user.pin);
+      }
+
       try {
         const messageSent = await sgMail.send(message);
         if (messageSent[0].statusCode === 202) {
