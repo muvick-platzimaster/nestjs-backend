@@ -141,7 +141,7 @@ export function generateVerificationCodeTemplateEnglish(name, code) {
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="675800a1-647f-4337-aec3-4eb1cabf5f12" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:18px 33px 18px 33px; line-height:40px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><h1 style="text-align: inherit"><strong>Welcome to Muvick Axel 🎉</strong></h1>
+        <td style="padding:18px 33px 18px 33px; line-height:40px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><h1 style="text-align: inherit"><strong>Welcome to Muvick ${name} 🎉</strong></h1>
 <div style="font-family: inherit; text-align: inherit">Thanks for registering to Muvick. We hope you can enjoy your account and have fun.We just need your help to confirm that you're not a robot otherwise your account would be suspended after 3 days, but you can always ask for a new code and re-activate your account at any time🥳</div><div></div></div></td>
       </tr>
     </tbody>
@@ -158,7 +158,7 @@ export function generateVerificationCodeTemplateEnglish(name, code) {
     <tbody>
       <tr>
         <td style="padding:18px 33px 18px 33px; line-height:30px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center">Code:&nbsp;</div>
-<h2 style="text-align: center">8 5 2 6</h2><div></div></div></td>
+<h2 style="text-align: center">${code}</h2><div></div></div></td>
       </tr>
     </tbody>
   </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="f72eae45-1ef5-4b13-8ff9-c03633f6c49f">
@@ -193,8 +193,7 @@ export function generateVerificationCodeTemplateEnglish(name, code) {
                                     <!--[if mso]>
                                   </td>
                                 </tr>
-                              </table>
-                            </center>
+                              </table>                            </center>
                             <![endif]-->
                           </td>
                         </tr>
