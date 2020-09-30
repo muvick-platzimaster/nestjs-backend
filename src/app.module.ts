@@ -10,6 +10,7 @@ import { GenreModule } from './modules/genre/genre.module';
 import { UtilModule } from './util/util.module';
 import { SerieModule } from './modules/serie/serie.module';
 import { MyListModule } from './modules/my-list/my-list.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MyListModule } from './modules/my-list/my-list.module';
     GenreModule,
     UtilModule,
     MyListModule,
+    ScheduleModule.forRoot(),
   ],
 })
 export class AppModule {
