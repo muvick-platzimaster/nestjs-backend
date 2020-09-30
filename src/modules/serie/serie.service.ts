@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { TvReadDto } from './dto/tv-read.dto';
+import { SerieReadDto } from './dto/serie-read.dto';
 import { plainToClass } from 'class-transformer';
-import { TvFilterDto } from './dto/tv-filter.dto';
+import { SerieFilterDto } from './dto/serie-filter.dto';
 import { UtilService } from 'src/util/util.service';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
-import { TvDetailDto } from './dto/tv-detail.dto';
+import { SerieDetailDto } from './dto/serie-detail.dto';
 @Injectable()
-export class TvService {
+export class SerieService {
   private TMDB_URL: string;
 
   constructor(
@@ -18,19 +18,19 @@ export class TvService {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
-  findTopRated(filter: TvFilterDto) {
+  findTopRated(filter: SerieFilterDto) {
     return this.call('tv/top_rated', filter);
   }
 
-  findPopular(filter: TvFilterDto) {
+  findPopular(filter: SerieFilterDto) {
     return this.call('tv/popular', filter);
   }
 
-  async findAll(filter: TvFilterDto) {
+  async findAll(filter: SerieFilterDto) {
     return this.call('discover/tv', filter);
   }
 
-  async findById(filter: TvFilterDto) {
+  async findById(filter: SerieFilterDto) {
     const queryParams = this.buildQuery(filter);
     const result = await axios.get(
       `${this.TMDB_URL}/tv/${filter.id}?${queryParams}`,
@@ -39,7 +39,7 @@ export class TvService {
       },
     );
     console.log('Detail TV', result.data);
-    return plainToClass(TvDetailDto, result.data);
+    return plainToClass(SerieDetailDto, result.data);
   }
 
   private async call(url: string, filter) {
@@ -50,7 +50,7 @@ export class TvService {
     return this.transformToDto(result);
   }
 
-  private buildQuery(filter: TvFilterDto): string {
+  private buildQuery(filter: SerieFilterDto): string {
     let query = [];
     query.push(this.queryString('query', filter.query));
     query.push(this.queryList('with_genres', filter.genres));
@@ -76,7 +76,7 @@ export class TvService {
     const resultData = result.data;
     const tvList = resultData.results
       .filter(r => r.poster_path)
-      .map(tv => plainToClass(TvReadDto, tv));
+      .map(tv => plainToClass(SerieReadDto, tv));
     return {
       page: resultData.page,
       // eslint-disable-next-line @typescript-eslint/camelcase

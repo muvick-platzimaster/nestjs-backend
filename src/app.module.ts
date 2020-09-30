@@ -8,18 +8,20 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GenreModule } from './modules/genre/genre.module';
 import { UtilModule } from './util/util.module';
-import { TvModule } from './modules/tv/tv.module';
+import { SerieModule } from './modules/serie/serie.module';
+import { MyListModule } from './modules/my-list/my-list.module';
 
 @Module({
   imports: [
     ConfigModule,
     UserModule,
     MovieModule,
-    TvModule,
+    SerieModule,
     DatabaseModule,
     AuthModule,
     GenreModule,
     UtilModule,
+    MyListModule,
   ],
 })
 export class AppModule {
