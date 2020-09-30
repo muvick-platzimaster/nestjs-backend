@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SerieReadDto } from './dto/serie-read.dto';
 import { plainToClass } from 'class-transformer';
 import { SerieFilterDto } from './dto/serie-filter.dto';
@@ -7,11 +7,17 @@ import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
 import { SerieDetailDto } from './dto/serie-detail.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { MyList } from '../my-list/schemas/my-list.schema';
+import { Serie } from './schemas/serie.schema';
 @Injectable()
 export class SerieService {
   private TMDB_URL: string;
 
   constructor(
+    @InjectModel('serie') private _serieModel: Model<Serie>,
+    @InjectModel('list') private _myListModel: Model<MyList>,
     private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
@@ -85,5 +91,91 @@ export class SerieService {
       total_pages: resultData.total_pages,
       results: tvList,
     };
+  }
+
+  async add(serieId: number, email: any): Promise<boolean> {
+    console.log(`Add the serieId: ${serieId} to the ${email} list`);
+    const theSerie = await this.getSerie({ id: serieId });
+    if (!theSerie) throw new NotFoundException('serie_not_found');
+    let myList = await this._myListModel.findOne({ email });
+    try {
+      if (!myList) {
+        const myListCreated = new this._myListModel({
+          email,
+          series: [theSerie],
+        });
+        await myListCreated.save();
+      } else {
+        if (!myList.series.includes(theSerie._id.toString())) {
+          myList.series.push(theSerie);
+          await myList.save();
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+    return true;
+  }
+
+  async remove(serieId: number, email: string): Promise<boolean> {
+    const myList = await this._myListModel.findOne({ email });
+    if (!myList) throw new NotFoundException('my_list_not_found');
+    const theSerie = await this._serieModel.findOne({ id: serieId });
+    if (!theSerie) throw new NotFoundException('serie_not_found');
+    const newSeries = myList.series.filter(
+      serie => serie != theSerie._id.toString(),
+    );
+    myList.series = newSeries;
+    try {
+      await myList.save();
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+    return true;
+  }
+
+  private async getSerie(filter: SerieFilterDto) {
+    try {
+      return await this.getFromDB(filter.id);
+    } catch (e) {
+      console.log('The serie is not in DB. Search in API');
+      try {
+        const fromAPI = await this.getFromAPI(filter.id);
+        if (fromAPI) {
+          return this.storeInDB(fromAPI);
+        }
+        return fromAPI;
+      } catch (e) {
+        console.error('Serie not found', e.response.data);
+        return;
+      }
+    }
+  }
+
+  private async getFromDB(serieId: number) {
+    const theSerieInDB = await this._serieModel.findOne({ id: serieId });
+    if (!theSerieInDB) throw new NotFoundException();
+    return theSerieInDB;
+  }
+
+  private async getFromAPI(serieId) {
+    const queryParams = this.buildQuery({ id: serieId });
+    const result = await axios.get(
+      `${this.TMDB_URL}/tv/${serieId}?${queryParams}`,
+      {
+        headers: this.utilService.insertRequestHeaders(),
+      },
+    );
+
+    return result.data;
+  }
+
+  private async storeInDB(theSerie: SerieDetailDto) {
+    const toSave = plainToClass(SerieDetailDto, theSerie);
+    const theSerieCreated = new this._serieModel(toSave);
+    await theSerieCreated.save();
+    return theSerieCreated;
   }
 }

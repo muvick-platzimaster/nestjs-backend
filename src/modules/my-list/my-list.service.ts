@@ -9,7 +9,10 @@ export class MyListService {
 
   async findAll(email: string) {
     const theList = await this._myListModel.findOne({ email });
-    return theList.populate('movies').execPopulate();
+    return theList
+      .populate('movies')
+      .populate('series')
+      .execPopulate();
     return theList;
   }
 }

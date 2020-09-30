@@ -22,8 +22,8 @@ export class Movie extends Document {
   release_date: string;
   @Prop()
   runtime: number;
-  // @Prop()
-  // readonly genres: GenreDto[];
+  @Prop()
+  readonly genres: GenreDto[];
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
