@@ -6,6 +6,7 @@ import { ConfigService } from 'src/config/config.service';
 import { MyListSchema } from '../my-list/schemas/my-list.schema';
 import { SerieSchema } from './schemas/serie.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MyListService } from '../my-list/my-list.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [SerieController],
-  providers: [SerieService, ConfigService],
+  providers: [SerieService, ConfigService, MyListService],
 })
 export class SerieModule {}

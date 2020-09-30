@@ -11,14 +11,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MyList } from '../my-list/schemas/my-list.schema';
 import { Serie } from './schemas/serie.schema';
+import { MyListService } from '../my-list/my-list.service';
 @Injectable()
 export class SerieService {
   private TMDB_URL: string;
 
   constructor(
     @InjectModel('serie') private _serieModel: Model<Serie>,
-    @InjectModel('list') private _myListModel: Model<MyList>,
-    private readonly utilService: UtilService,
+    private readonly _myListService: MyListService,
+    private readonly _utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
@@ -41,7 +42,7 @@ export class SerieService {
     const result = await axios.get(
       `${this.TMDB_URL}/tv/${filter.id}?${queryParams}`,
       {
-        headers: this.utilService.insertRequestHeaders(),
+        headers: this._utilService.insertRequestHeaders(),
       },
     );
     console.log('Detail TV', result.data);
@@ -51,7 +52,7 @@ export class SerieService {
   private async call(url: string, filter) {
     const queryParams = this.buildQuery(filter);
     const result = await axios.get(`${this.TMDB_URL}/${url}?${queryParams}`, {
-      headers: this.utilService.insertRequestHeaders(),
+      headers: this._utilService.insertRequestHeaders(),
     });
     return this.transformToDto(result);
   }
@@ -97,43 +98,13 @@ export class SerieService {
     console.log(`Add the serieId: ${serieId} to the ${email} list`);
     const theSerie = await this.getSerie({ id: serieId });
     if (!theSerie) throw new NotFoundException('serie_not_found');
-    let myList = await this._myListModel.findOne({ email });
-    try {
-      if (!myList) {
-        const myListCreated = new this._myListModel({
-          email,
-          series: [theSerie],
-        });
-        await myListCreated.save();
-      } else {
-        if (!myList.series.includes(theSerie._id.toString())) {
-          myList.series.push(theSerie);
-          await myList.save();
-        }
-      }
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-    return true;
+    return this._myListService.add(email, theSerie, false);
   }
 
   async remove(serieId: number, email: string): Promise<boolean> {
-    const myList = await this._myListModel.findOne({ email });
-    if (!myList) throw new NotFoundException('my_list_not_found');
     const theSerie = await this._serieModel.findOne({ id: serieId });
     if (!theSerie) throw new NotFoundException('serie_not_found');
-    const newSeries = myList.series.filter(
-      serie => serie != theSerie._id.toString(),
-    );
-    myList.series = newSeries;
-    try {
-      await myList.save();
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-    return true;
+    return this._myListService.remove(email, theSerie, false);
   }
 
   private async getSerie(filter: SerieFilterDto) {
@@ -165,7 +136,7 @@ export class SerieService {
     const result = await axios.get(
       `${this.TMDB_URL}/tv/${serieId}?${queryParams}`,
       {
-        headers: this.utilService.insertRequestHeaders(),
+        headers: this._utilService.insertRequestHeaders(),
       },
     );
 

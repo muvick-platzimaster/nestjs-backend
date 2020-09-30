@@ -10,7 +10,7 @@ import { MovieDetailDto } from './dto/movie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
-import { MyList } from '../my-list/schemas/my-list.schema';
+import { MyListService } from '../my-list/my-list.service';
 
 @Injectable()
 export class MovieService {
@@ -18,7 +18,7 @@ export class MovieService {
 
   constructor(
     @InjectModel('movie') private _movieModel: Model<Movie>,
-    @InjectModel('list') private _myListModel: Model<MyList>,
+    private readonly _myListService: MyListService,
     private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
@@ -53,43 +53,14 @@ export class MovieService {
   async add(movieId: number, email: any): Promise<boolean> {
     console.log(`Add the movieId: ${movieId} to the ${email} list`);
     const theMovie = await this.getMovie({ id: movieId });
-    let myList = await this._myListModel.findOne({ email });
-    try {
-      if (!myList) {
-        const myListCreated = new this._myListModel({
-          email,
-          movies: [theMovie],
-        });
-        await myListCreated.save();
-      } else {
-        if (!myList.movies.includes(theMovie._id.toString())) {
-          myList.movies.push(theMovie);
-          await myList.save();
-        }
-      }
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-    return true;
+    if (!theMovie) throw new NotFoundException('movie_not_found');
+    return this._myListService.add(email, theMovie, true);
   }
 
   async remove(movieId: number, email: string): Promise<boolean> {
-    const myList = await this._myListModel.findOne({ email });
-    if (!myList) throw new NotFoundException('my_list_not_found');
     const theMovie = await this._movieModel.findOne({ id: movieId });
     if (!theMovie) throw new NotFoundException('movie_not_found');
-    const newMovies = myList.movies.filter(
-      movie => movie != theMovie._id.toString(),
-    );
-    myList.movies = newMovies;
-    try {
-      await myList.save();
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-    return true;
+    return this._myListService.remove(email, theMovie, true);
   }
 
   private async call(url: string, filter) {
