@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
@@ -7,12 +7,18 @@ import { plainToClass } from 'class-transformer';
 import { MovieReadDto } from './dto/movie-read.dto';
 import { UtilService } from '../../util/util.service';
 import { MovieDetailDto } from './dto/movie-detail.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Movie } from './schemas/movie.schema';
+import { MyListService } from '../my-list/my-list.service';
 
 @Injectable()
 export class MovieService {
   private TMDB_URL: string;
 
   constructor(
+    @InjectModel('movie') private _movieModel: Model<Movie>,
+    private readonly _myListService: MyListService,
     private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
   ) {
@@ -40,15 +46,21 @@ export class MovieService {
   }
 
   async findById(filter: MovieFilterDto) {
-    const queryParams = this.buildQuery(filter);
-    const result = await axios.get(
-      `${this.TMDB_URL}/movie/${filter.id}?${queryParams}`,
-      {
-        headers: this.utilService.insertRequestHeaders(),
-      },
-    );
-    console.log('Detail Movie', result.data);
-    return plainToClass(MovieDetailDto, result.data);
+    const theMovie = await this.getMovie(filter);
+    return plainToClass(MovieDetailDto, theMovie);
+  }
+
+  async add(movieId: number, email: any): Promise<boolean> {
+    console.log(`Add the movieId: ${movieId} to the ${email} list`);
+    const theMovie = await this.getMovie({ id: movieId });
+    if (!theMovie) throw new NotFoundException('movie_not_found');
+    return this._myListService.add(email, theMovie, true);
+  }
+
+  async remove(movieId: number, email: string): Promise<boolean> {
+    const theMovie = await this._movieModel.findOne({ id: movieId });
+    if (!theMovie) throw new NotFoundException('movie_not_found');
+    return this._myListService.remove(email, theMovie, true);
   }
 
   private async call(url: string, filter) {
@@ -96,5 +108,43 @@ export class MovieService {
       total_pages: resultData.total_pages,
       results: movieList,
     };
+  }
+
+  private async getMovie(filter: MovieFilterDto) {
+    try {
+      return await this.getFromDB(filter.id);
+    } catch (e) {
+      console.log('The movie is not in DB. Search in API');
+      const fromAPI = await this.getFromAPI(filter.id);
+      if (fromAPI) {
+        return this.storeInDB(fromAPI);
+      }
+      return fromAPI;
+    }
+  }
+
+  private async getFromDB(movieId: number) {
+    const theMovieInDB = await this._movieModel.findOne({ id: movieId });
+    if (!theMovieInDB) throw new NotFoundException();
+    return theMovieInDB;
+  }
+
+  private async getFromAPI(movieId) {
+    const queryParams = this.buildQuery({ id: movieId });
+    const result = await axios.get(
+      `${this.TMDB_URL}/movie/${movieId}?${queryParams}`,
+      {
+        headers: this.utilService.insertRequestHeaders(),
+      },
+    );
+
+    return result.data;
+  }
+
+  private async storeInDB(theMovie: MovieDetailDto) {
+    const toSave = plainToClass(MovieDetailDto, theMovie);
+    const theMovieCreated = new this._movieModel(toSave);
+    await theMovieCreated.save();
+    return theMovieCreated;
   }
 }
