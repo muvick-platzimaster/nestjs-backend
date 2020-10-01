@@ -42,7 +42,7 @@ export class MyListService {
     theEntertaiment: Movie | Serie,
     isMovie: boolean,
   ): Promise<boolean> {
-    let myList = await this._myListModel.findOne({ email });
+    const myList = await this._myListModel.findOne({ email });
     if (!myList) throw new NotFoundException('my_list_not_found');
     if (isMovie) return this.removeMovie(myList, theEntertaiment);
     return this.removeSerie(myList, theEntertaiment);
