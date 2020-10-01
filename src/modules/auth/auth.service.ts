@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { SignChangeDto, SigninDto, SignupDto } from './dto';
+import { SignChangeDto, SigninDto, SignupDto } from './dtos';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,10 +18,10 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { ConfigEnum } from '../../config/config.keys';
 import { ConfigService } from '../../config/config.service';
 import { generateVerificationCodeTemplate } from './templates/verificationCode-email-spanish';
-import { PinConfirmationDto } from './dto/pin-confirmation.dto';
-import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
+import { PinConfirmationDto } from './dtos/pin-confirmation.dto';
+import { AuthConfirmedDto } from './dtos/auth-confirmed.dto';
 import { plainToClass } from 'class-transformer';
-import { AuthResendCodeDto } from './dto/auth-resend-code.dto';
+import { AuthResendCodeDto } from './dtos/auth-resend-code.dto';
 import PasswordValidator = require('password-validator');
 import sgMail = require('@sendgrid/mail');
 import moment = require('moment');
@@ -34,8 +34,7 @@ export class AuthService {
     private readonly _utilService: UtilService,
     private readonly _configService: ConfigService,
     @InjectModel('user') private userModel: Model<User>,
-  ) {
-  }
+  ) {}
 
   async signUp(signup: SignupDto): Promise<void> {
     const user = await this.userModel.findOne({ email: signup.email });
@@ -127,7 +126,10 @@ export class AuthService {
     const user = await this.userModel.findOne({ email: pin.email });
 
     if (user.confirmed) {
-      return plainToClass(AuthConfirmedDto, { email: pin.email, confirmed: true });
+      return plainToClass(AuthConfirmedDto, {
+        email: pin.email,
+        confirmed: true,
+      });
     }
 
     const pinMatched = user.pin === pin.pin;
@@ -136,7 +138,10 @@ export class AuthService {
       user.expirationDate = null;
       user.pin = null;
       await user.save();
-      return plainToClass(AuthConfirmedDto, { email: pin.email, confirmed: true });
+      return plainToClass(AuthConfirmedDto, {
+        email: pin.email,
+        confirmed: true,
+      });
     }
     throw new ConflictException('pin_not_match');
   }
@@ -156,7 +161,9 @@ export class AuthService {
   @Cron(CronExpression.EVERY_MINUTE)
   async sendVerificationEmail() {
     sgMail.setApiKey(this._configService.get(ConfigEnum.SENDGRID_API_KEY));
-    const unsentVerificationEmails = await this.userModel.find({ emailSent: false });
+    const unsentVerificationEmails = await this.userModel.find({
+      emailSent: false,
+    });
     const message = {
       to: '',
       from: 'me@axelespinosadev.com',
@@ -169,17 +176,22 @@ export class AuthService {
 
       if (user.language === 'es') {
         message.html = generateVerificationCodeTemplate(user.name, user.pin);
-        message.subject = 'Muvick Código de verificación'
+        message.subject = 'Muvick Código de verificación';
       } else if (user.language === 'en') {
-        message.html = generateVerificationCodeTemplateEnglish(user.name, user.pin);
-        message.subject = 'Muvick Verification Code'
+        message.html = generateVerificationCodeTemplateEnglish(
+          user.name,
+          user.pin,
+        );
+        message.subject = 'Muvick Verification Code';
       }
 
       try {
         const messageSent = await sgMail.send(message);
         if (messageSent[0].statusCode === 202) {
           user.emailSent = true;
-          user.expirationDate = moment().add(3, 'days').format();
+          user.expirationDate = moment()
+            .add(3, 'days')
+            .format();
           user.save();
         }
       } catch (err) {
@@ -191,7 +203,10 @@ export class AuthService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async suspendService() {
-    const users = await this.userModel.find({ confirmed: false, emailSent: true });
+    const users = await this.userModel.find({
+      confirmed: false,
+      emailSent: true,
+    });
     for (const user of users) {
       const expired = moment(user.expirationDate).isBefore(moment().format());
       if (expired) {
@@ -200,5 +215,4 @@ export class AuthService {
       }
     }
   }
-
 }

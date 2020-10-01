@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SerieReadDto } from './dto/serie-read.dto';
+import { SerieDto } from './dtos/serie.dto';
 import { plainToClass } from 'class-transformer';
-import { SerieFilterDto } from './dto/serie-filter.dto';
+import { SerieFilterDto } from './dtos/serie-filter.dto';
 import { UtilService } from 'src/util/util.service';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
-import { SerieDetailDto } from './dto/serie-detail.dto';
+import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MyList } from '../my-list/schemas/my-list.schema';
@@ -83,7 +83,7 @@ export class SerieService {
     const resultData = result.data;
     const tvList = resultData.results
       .filter(r => r.poster_path)
-      .map(tv => plainToClass(SerieReadDto, tv));
+      .map(tv => plainToClass(SerieDto, tv));
     return {
       page: resultData.page,
       // eslint-disable-next-line @typescript-eslint/camelcase

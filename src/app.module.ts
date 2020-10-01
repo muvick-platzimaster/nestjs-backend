@@ -15,7 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule,
-    UserModule,
+    // UserModule,
     MovieModule,
     SerieModule,
     DatabaseModule,

@@ -1,22 +1,30 @@
-import { Body, Controller, HttpCode, Post, Put, UseGuards } from '@nestjs/common';
-import { SignChangeDto, SigninDto, SignupDto } from './dto';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import { SignChangeDto, SigninDto, SignupDto } from './dtos';
 import { AuthService } from './auth.service';
 import {
-  ApiConflictResponse, ApiInternalServerErrorResponse,
-  ApiOkResponse, ApiResponse,
+  ApiConflictResponse,
+  ApiInternalServerErrorResponse,
+  ApiOkResponse,
+  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { PinConfirmationDto } from './dto/pin-confirmation.dto';
-import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
-import { AuthResendCodeDto } from './dto/auth-resend-code.dto';
+import { PinConfirmationDto } from './dtos/pin-confirmation.dto';
+import { AuthConfirmedDto } from './dtos/auth-confirmed.dto';
+import { AuthResendCodeDto } from './dtos/auth-resend-code.dto';
 
 @ApiTags('The authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly _authService: AuthService) {
-  }
+  constructor(private readonly _authService: AuthService) {}
 
   @Post('signup')
   @ApiConflictResponse({
@@ -55,7 +63,6 @@ export class AuthController {
       },
     },
   })
-
   async signIn(
     @Body() signin: SigninDto,
   ): Promise<{
@@ -69,8 +76,8 @@ export class AuthController {
 
   @Post('confirm')
   @HttpCode(200)
-  @ApiOkResponse({ description: 'It happens when PINs matched'})
-  @ApiConflictResponse({ description: 'It happens when PINs does not match'})
+  @ApiOkResponse({ description: 'It happens when PINs matched' })
+  @ApiConflictResponse({ description: 'It happens when PINs does not match' })
   @UseGuards(AuthGuard('jwt'))
   confirm(@Body() pin: PinConfirmationDto): Promise<AuthConfirmedDto> {
     return this._authService.confirm(pin);
@@ -78,9 +85,10 @@ export class AuthController {
 
   @Post('confirm/resend')
   @HttpCode(200)
-  @ApiOkResponse({ description: 'It happens when the pin was re-sent'})
-  @ApiInternalServerErrorResponse({ description: 'It happens when any user is matched with the' +
-      ' email sent'})
+  @ApiOkResponse({ description: 'It happens when the pin was re-sent' })
+  @ApiInternalServerErrorResponse({
+    description: 'It happens when any user is matched with the' + ' email sent',
+  })
   @UseGuards(AuthGuard('jwt'))
   resendPin(@Body() email: AuthResendCodeDto): Promise<boolean> {
     return this._authService.resendPin(email);

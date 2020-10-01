@@ -15,8 +15,8 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { MovieService } from './movie.service';
-import { MovieResponseDto } from './dto/movie-response.dto';
-import { MovieDetailDto } from './dto/movie-detail.dto';
+import { MovieResponseDto } from './dtos/movie-response.dto';
+import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('The movies')
@@ -86,6 +86,10 @@ export class MovieController {
 
   @Post(':movieId')
   @ApiOperation({ summary: 'Add the movie to my list' })
+  @ApiOkResponse({
+    type: Boolean,
+    description: 'True when the movie was added or False when didnt',
+  })
   @UseGuards(AuthGuard('jwt'))
   addMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
     return this._movieService.add(movieId, req.user.email);
@@ -93,6 +97,10 @@ export class MovieController {
 
   @Delete(':movieId')
   @ApiOperation({ summary: 'Removes the movie from my list' })
+  @ApiOkResponse({
+    type: Boolean,
+    description: 'True when the movie was deleted or False when didnt',
+  })
   @UseGuards(AuthGuard('jwt'))
   removeMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
     return this._movieService.remove(movieId, req.user.email);

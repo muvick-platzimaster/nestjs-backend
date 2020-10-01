@@ -9,14 +9,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { SerieService } from './serie.service';
-import { SerieResponseDto } from './dto/serie-response.dto';
+import { SerieResponseDto } from './dtos/serie-response.dto';
 import {
   ApiQuery,
   ApiOkResponse,
   ApiTags,
   ApiOperation,
 } from '@nestjs/swagger';
-import { SerieDetailDto } from './dto/serie-detail.dto';
+import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('The series')
