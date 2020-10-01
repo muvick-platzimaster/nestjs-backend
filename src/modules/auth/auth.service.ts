@@ -26,6 +26,7 @@ import PasswordValidator = require('password-validator');
 import sgMail = require('@sendgrid/mail');
 import moment = require('moment');
 import { generateVerificationCodeTemplateEnglish } from './templates/verificationCode-email-english';
+import { SigninResponseDto } from './dto/signin-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -58,11 +59,7 @@ export class AuthService {
 
   async signIn(
     signin: SigninDto,
-  ): Promise<{
-    accessToken: string;
-    name: string;
-    email: string;
-  }> {
+  ): Promise<SigninResponseDto> {
     const { password } = signin;
     const user = await this.userModel.findOne({ email: signin.email });
     if (!user) throw new NotFoundException('invalid_credentials');
@@ -73,11 +70,12 @@ export class AuthService {
       email: user.email,
     };
     const token = await this._jwtService.sign(payload);
-    return {
+    return plainToClass(SigninResponseDto, {
       accessToken: token,
       name: user.name,
       email: user.email,
-    };
+      suspended: user.suspended
+    });
   }
 
   async signChange(signChange: SignChangeDto): Promise<boolean> {

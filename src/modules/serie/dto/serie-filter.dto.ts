@@ -1,4 +1,4 @@
-export interface TvFilterDto {
+export interface SerieFilterDto {
   id?: number;
   query?: string;
   genres?: number[];

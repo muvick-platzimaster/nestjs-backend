@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
 
 @Exclude()
-export class TvDetailDto {
+export class SerieDetailDto {
   @Expose()
   @ApiProperty()
   readonly id: number;
