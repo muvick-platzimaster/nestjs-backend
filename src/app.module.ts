@@ -10,6 +10,7 @@ import { GenreModule } from './modules/genre/genre.module';
 import { UtilModule } from './util/util.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TvModule } from './modules/tv/tv.module';
+import { HistoryService } from './history/history.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { TvModule } from './modules/tv/tv.module';
     UtilModule,
     ScheduleModule.forRoot()
   ],
+  providers: [HistoryService],
 })
 export class AppModule {
   static PORT: number | string;
