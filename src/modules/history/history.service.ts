@@ -9,7 +9,7 @@ export class HistoryService {
   constructor(@InjectModel('history') private historyModel: Model<History>) {
   }
 
-  async add(contentData: HistoryAddDto) {
+  async add(contentData: HistoryAddDto): Promise<boolean> {
     try {
       const history = await this.historyModel.findOne({ email: contentData.email})
       if (!history) {
@@ -24,7 +24,6 @@ export class HistoryService {
 
         const saved = await record.save()
         return !!saved;
-
       }
     } catch (err) {
       console.error(err.message)
