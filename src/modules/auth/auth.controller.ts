@@ -11,6 +11,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { PinConfirmationDto } from './dto/pin-confirmation.dto';
 import { AuthConfirmedDto } from './dto/auth-confirmed.dto';
 import { AuthResendCodeDto } from './dto/auth-resend-code.dto';
+import { SigninResponseDto } from './dto/signin-response.dto';
 
 @ApiTags('The authentication')
 @Controller('auth')
@@ -58,11 +59,7 @@ export class AuthController {
 
   async signIn(
     @Body() signin: SigninDto,
-  ): Promise<{
-    accessToken: string;
-    name: string;
-    email: string;
-  }> {
+  ): Promise<SigninResponseDto> {
     console.log('El usuario a autenticar es =>>>>>>>', signin);
     return this._authService.signIn(signin);
   }
