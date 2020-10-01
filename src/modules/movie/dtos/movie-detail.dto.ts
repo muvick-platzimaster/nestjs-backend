@@ -18,6 +18,9 @@ export class MovieDetailDto {
   readonly original_language: string;
   @Expose()
   @ApiProperty()
+  readonly title: string;
+  @Expose()
+  @ApiProperty()
   readonly original_title: string;
   @Expose()
   @ApiProperty()
@@ -31,6 +34,9 @@ export class MovieDetailDto {
   @Expose()
   @ApiProperty()
   readonly runtime: number;
+  @Expose()
+  @ApiProperty()
+  readonly vote_average: number;
   @Expose()
   @ApiProperty({ type: GenreDto, isArray: true })
   readonly genres: GenreDto[];

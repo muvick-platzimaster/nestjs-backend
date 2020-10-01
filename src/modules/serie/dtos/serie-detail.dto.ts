@@ -28,7 +28,9 @@ export class SerieDetailDto {
   @Expose()
   @ApiProperty()
   readonly first_air_date: string;
-
+  @Expose()
+  @ApiProperty()
+  readonly vote_count: number;
   @Expose()
   @ApiProperty({ type: GenreDto, isArray: true })
   readonly genres: GenreDto[];
