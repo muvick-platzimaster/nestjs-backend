@@ -15,6 +15,7 @@ export class HistoryService {
       if (!history) {
         const record = new this.historyModel();
         record.email = contentData.email
+
         if (contentData.contentType === 'movie') {
           record.movies.push(contentData.contentId)
         } else if (contentData.contentType === 'series') {
@@ -26,7 +27,8 @@ export class HistoryService {
 
       }
     } catch (err) {
-
+      console.error(err.message)
+      console.error(err.stack)
     }
   }
 }
