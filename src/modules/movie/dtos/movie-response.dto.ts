@@ -1,8 +1,8 @@
 import { PageResultDto } from 'src/util/page-result.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { MovieReadDto } from './movie-read.dto';
+import { MovieDto } from './movie.dto';
 
 export class MovieResponseDto extends PageResultDto {
-  @ApiProperty({ type: MovieReadDto, isArray: true })
-  readonly results: MovieReadDto[];
+  @ApiProperty({ type: MovieDto, isArray: true })
+  readonly results: MovieDto[];
 }

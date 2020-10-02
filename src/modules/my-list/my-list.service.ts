@@ -2,10 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { MyList } from './schemas/my-list.schema';
-import { MovieDetailDto } from '../movie/dto/movie-detail.dto';
-import { SerieDetailDto } from '../serie/dto/serie-detail.dto';
+import { MovieDetailDto } from '../movie/dtos/movie-detail.dto';
+import { SerieDetailDto } from '../serie/dtos/serie-detail.dto';
 import { Movie } from '../movie/schemas/movie.schema';
 import { Serie } from '../serie/schemas/serie.schema';
+import { plainToClass } from 'class-transformer';
+import { MyListDto } from './dtos/my-list.dto';
 
 @Injectable()
 export class MyListService {
@@ -13,11 +15,19 @@ export class MyListService {
 
   async findAll(email: string) {
     const theList = await this._myListModel.findOne({ email });
-    return theList
+    const toReturn = await theList
       .populate('movies')
       .populate('series')
       .execPopulate();
-    return theList;
+    const theListDto = new MyListDto();
+    theListDto.email = theList.email;
+    theListDto.movies = toReturn.movies.map(m =>
+      plainToClass(MovieDetailDto, m),
+    );
+    theListDto.series = toReturn.series.map(s =>
+      plainToClass(SerieDetailDto, s),
+    );
+    return theListDto;
   }
 
   async add(

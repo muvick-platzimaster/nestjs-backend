@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
 
 @Exclude()
-export class MovieDetailDto {
+export class SerieDetailDto {
   @Expose()
   @ApiProperty()
   readonly id: number;
@@ -18,7 +18,7 @@ export class MovieDetailDto {
   readonly original_language: string;
   @Expose()
   @ApiProperty()
-  readonly original_title: string;
+  readonly original_name: string;
   @Expose()
   @ApiProperty()
   readonly overview: string;
@@ -27,10 +27,10 @@ export class MovieDetailDto {
   readonly popularity: number;
   @Expose()
   @ApiProperty()
-  readonly release_date: string;
+  readonly first_air_date: string;
   @Expose()
   @ApiProperty()
-  readonly runtime: number;
+  readonly vote_count: number;
   @Expose()
   @ApiProperty({ type: GenreDto, isArray: true })
   readonly genres: GenreDto[];

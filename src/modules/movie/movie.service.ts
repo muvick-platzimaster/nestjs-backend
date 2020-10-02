@@ -2,11 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
-import { MovieFilterDto } from './dto/movie-filter.dto';
+import { MovieFilterDto } from './dtos/movie-filter.dto';
 import { plainToClass } from 'class-transformer';
-import { MovieReadDto } from './dto/movie-read.dto';
+import { MovieDto } from './dtos/movie.dto';
 import { UtilService } from '../../util/util.service';
-import { MovieDetailDto } from './dto/movie-detail.dto';
+import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
@@ -99,7 +99,7 @@ export class MovieService {
     const resultData = result.data;
     const movieList = resultData.results
       .filter(r => r.poster_path)
-      .map(movie => plainToClass(MovieReadDto, movie));
+      .map(movie => plainToClass(MovieDto, movie));
     return {
       page: resultData.page,
       // eslint-disable-next-line @typescript-eslint/camelcase

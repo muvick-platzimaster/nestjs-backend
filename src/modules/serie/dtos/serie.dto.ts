@@ -2,7 +2,7 @@ import { Expose, Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Exclude()
-export class SerieReadDto {
+export class SerieDto {
   @Expose()
   @ApiProperty()
   readonly id: number;
