@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { HistoryAddDto } from './dtos/history-add.dto';
 import { Movie } from '../movie/schemas/movie.schema';
 import { Serie } from '../serie/schemas/serie.schema';
-import { refCount } from 'rxjs/operators';
 
 
 @Injectable()
@@ -18,24 +17,24 @@ export class HistoryService {
       const history = await this.historyModel.findOne({ email: contentData.email });
       if (!history) {
         const record = new this.historyModel();
-        record.email = contentData.email
-        record.movies = []
-        record.series = []
-        return await this.insertContent(record, contentData.contentType, contentData.contentId)
+        record.email = contentData.email;
+        record.movies = [];
+        record.series = [];
+        return await this.insertContent(record, contentData.contentType, contentData.contentId);
       }
-      return await this.insertContent(history, contentData.contentType, contentData.contentId)
+      return await this.insertContent(history, contentData.contentType, contentData.contentId);
 
     } catch (err) {
       console.error(err.message);
       console.error(err.stack);
-      throw new InternalServerErrorException()
+      throw new InternalServerErrorException();
     }
   }
 
-  private async insertContent (record: History, contentType, contentId): Promise<boolean> {
+  private async insertContent(record: History, contentType, contentId): Promise<boolean> {
     try {
       if (this.isDuplicated(record, contentType, contentId)) {
-        return true
+        return true;
       }
 
       if (contentType === 'movie') {
@@ -45,22 +44,22 @@ export class HistoryService {
         const series = await this.serieModel.findOne({ _id: contentId });
         record.series.push(series);
       }
-      const saved = await record.save()
-      return !!saved
+      const saved = await record.save();
+      return !!saved;
     } catch (err) {
-      console.log(err.message)
-      console.log(err.stack)
-      throw new InternalServerErrorException()
+      console.log(err.message);
+      console.log(err.stack);
+      throw new InternalServerErrorException();
     }
   }
 
-  private isDuplicated (document: History, contentType, contentId): boolean {
+  private isDuplicated(document: History, contentType, contentId): boolean {
     if (contentType === 'movie') {
-      return document.movies.includes(contentId)
+      return document.movies.includes(contentId);
     }
 
     if (contentType === 'series') {
-      return document.series.includes(contentId)
+      return document.series.includes(contentId);
     }
   }
 }
