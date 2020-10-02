@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { History } from './schema/history.schema';
 import { Model } from 'mongoose';
@@ -13,44 +13,23 @@ export class HistoryService {
   }
 
   async add(contentData: HistoryAddDto): Promise<boolean> {
-    try {
-      const history = await this.historyModel.findOne({ email: contentData.email });
-      if (!history) {
-        const record = new this.historyModel();
-        record.email = contentData.email;
-        record.movies = [];
-        record.series = [];
-        return await this.insertContent(record, contentData.contentType, contentData.contentId);
-      }
-      return await this.insertContent(history, contentData.contentType, contentData.contentId);
-
-    } catch (err) {
-      console.error(err.message);
-      console.error(err.stack);
-      throw new InternalServerErrorException();
+    const history = await this.historyModel.findOne({ email: contentData.email });
+    if (!history) {
+      const record = new this.historyModel();
+      record.email = contentData.email;
+      record.movies = [];
+      record.series = [];
+      return await this.insertContent(record, contentData.contentType, contentData.contentId);
     }
+    return await this.insertContent(history, contentData.contentType, contentData.contentId);
+
   }
 
   private async insertContent(record: History, contentType, contentId): Promise<boolean> {
-    try {
-      if (this.isDuplicated(record, contentType, contentId)) {
-        return true;
-      }
-
-      if (contentType === 'movie') {
-        const movie = await this.movieModel.findOne({ _id: contentId });
-        record.movies.push(movie);
-      } else if (contentType === 'series') {
-        const series = await this.serieModel.findOne({ _id: contentId });
-        record.series.push(series);
-      }
-      const saved = await record.save();
-      return !!saved;
-    } catch (err) {
-      console.log(err.message);
-      console.log(err.stack);
-      throw new InternalServerErrorException();
+    if (this.isDuplicated(record, contentType, contentId)) {
+      return true;
     }
+    return await this.addContentToHistory(record, contentType, contentId);
   }
 
   private isDuplicated(document: History, contentType, contentId): boolean {
@@ -61,5 +40,34 @@ export class HistoryService {
     if (contentType === 'series') {
       return document.series.includes(contentId);
     }
+
+    throw new BadRequestException('contentType_not_allowed');
+  }
+
+  private async addContentToHistory(record: History, contentType, contentId): Promise<boolean> {
+    if (!record || !contentId) {
+      throw new InternalServerErrorException();
+    }
+
+    if (contentType === 'movie') {
+      const movie = await this.movieModel.findOne({ _id: contentId });
+      if (!movie) {
+        throw new BadRequestException('invalid_id');
+      }
+      record.movies.push(movie);
+      const saved = await record.save();
+      return !!saved;
+    } else if (contentType === 'series') {
+      const series = await this.serieModel.findOne({ _id: contentId });
+      if (!series) {
+        throw new BadRequestException('invalid_id');
+      }
+      record.series.push(series);
+      const saved = await record.save();
+      return !!saved;
+    } else {
+      throw new InternalServerErrorException('contentType_not_allowed');
+    }
+
   }
 }
