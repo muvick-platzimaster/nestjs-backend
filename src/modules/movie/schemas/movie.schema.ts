@@ -6,7 +6,7 @@ import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
 export class Movie extends Document {
   @Prop({ unique: true })
   id: number;
-  @Prop({ unique: true })
+  @Prop()
   backdrop_path: string;
   @Prop({ unique: true })
   poster_path: string;

@@ -77,11 +77,12 @@ export class MovieService {
       query.push(this.queryString('query', filter.query));
       query.push(this.queryList('with_genres', filter.genres));
       query.push(this.queryString('language', filter.language));
+      query.push(this.queryString('page', !filter.page ? 1 : filter.page));
     }
     return query.filter(Boolean).join('&');
   }
 
-  private queryString(key: string, value: string) {
+  private queryString(key: string, value: any) {
     if (value) {
       return `${key}=${value}`;
     }
@@ -146,5 +147,18 @@ export class MovieService {
     const theMovieCreated = new this._movieModel(toSave);
     await theMovieCreated.save();
     return theMovieCreated;
+  }
+
+  async populate() {
+    let page = 0;
+    let theList;
+    do {
+      theList = await this.findAll({ page: ++page });
+      if (theList.results.length > 0) {
+        theList.results.forEach(movie => {
+          this.getMovie({ id: movie.id });
+        });
+      }
+    } while (theList.total_pages > page);
   }
 }

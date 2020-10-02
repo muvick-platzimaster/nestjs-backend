@@ -7,6 +7,7 @@ import {
   UseGuards,
   Delete,
   Req,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -33,11 +34,13 @@ export class MovieController {
     @Query('query') query?: string,
     @Query('genre') genre?: number,
     @Query('language') language?: string,
+    @Query('page') page?: number,
   ): Promise<MovieResponseDto> {
     return this._movieService.findAll({
       query,
       genres: [genre],
       language,
+      page,
     });
   }
 
@@ -104,5 +107,10 @@ export class MovieController {
   @UseGuards(AuthGuard('jwt'))
   removeMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
     return this._movieService.remove(movieId, req.user.email);
+  }
+
+  @Patch('populate')
+  populate() {
+    this._movieService.populate();
   }
 }
