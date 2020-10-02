@@ -72,7 +72,7 @@ export class MovieService {
   }
 
   private buildQuery(filter: MovieFilterDto): string {
-    let query = [];
+    const query = [];
     if (filter) {
       query.push(this.queryString('query', filter.query));
       query.push(this.queryList('with_genres', filter.genres));

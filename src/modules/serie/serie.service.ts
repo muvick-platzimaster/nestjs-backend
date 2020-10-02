@@ -58,7 +58,7 @@ export class SerieService {
   }
 
   private buildQuery(filter: SerieFilterDto): string {
-    let query = [];
+    const query = [];
     query.push(this.queryString('query', filter.query));
     query.push(this.queryList('with_genres', filter.genres));
     query.push(this.queryString('language', filter.language));

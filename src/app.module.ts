@@ -11,6 +11,7 @@ import { UtilModule } from './util/util.module';
 import { SerieModule } from './modules/serie/serie.module';
 import { MyListModule } from './modules/my-list/my-list.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { HistoryModule} from './modules/history/history.module';
 
 @Module({
   imports: [
@@ -23,8 +24,10 @@ import { ScheduleModule } from '@nestjs/schedule';
     GenreModule,
     UtilModule,
     MyListModule,
+    HistoryModule,
     ScheduleModule.forRoot(),
   ],
+  providers: [],
 })
 export class AppModule {
   static PORT: number | string;
