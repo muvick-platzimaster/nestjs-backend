@@ -1,4 +1,4 @@
-import { Contains, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class HistoryAddDto {
@@ -13,7 +13,6 @@ export class HistoryAddDto {
 
   @ApiProperty()
   @IsString()
-  @Contains('movie')
-  @Contains('series')
+  @IsNotEmpty()
   contentType: string;
 }

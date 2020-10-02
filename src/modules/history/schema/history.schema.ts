@@ -1,16 +1,18 @@
 import { Movie } from '../../movie/schemas/movie.schema';
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MoongooseSchema } from 'mongoose';
 import { Serie } from '../../serie/schemas/serie.schema';
 
-export class History extends Document {
+@Schema({ collection: 'histories' })
+export class History extends Document{
   @Prop({ required: true, unique: true })
   email: string;
-  @Prop({ type: [Schema.Types.ObjectId], ref: 'movie', unique: true })
-  movies: [string];
 
-  @Prop({ type: [Schema.Types.ObjectId], ref: 'serie', unique: true })
-  series: [string];
+  @Prop([{ type: MoongooseSchema.Types.ObjectId, ref: 'movie', unique: true }])
+  movies: Movie[];
+
+  @Prop([{ type: MoongooseSchema.Types.ObjectId, ref: 'serie', unique: true  }])
+  series: Serie[];
 
   @Prop({ default: Date.now() })
   createdAt: Date;
