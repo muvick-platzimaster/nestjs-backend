@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { History } from './schema/history.schema';
 import { Model } from 'mongoose';
 import { HistoryAddDto } from './dtos/history-add.dto';
 import { Movie } from '../movie/schemas/movie.schema';
 import { Serie } from '../serie/schemas/serie.schema';
+import { refCount } from 'rxjs/operators';
 
 
 @Injectable()
@@ -20,43 +21,46 @@ export class HistoryService {
         record.email = contentData.email
         record.movies = []
         record.series = []
-
-        if (contentData.contentType === 'movie') {
-          const movie = await this.movieModel.findOne({ _id: contentData.contentId });
-          record.movies.push(movie);
-        } else if (contentData.contentType === 'series') {
-          const series = await this.serieModel.findOne({ _id: contentData.contentId });
-          record.series.push(series);
-        }
-        console.log(record)
-
-        const saved = await record.save();
-        return !!saved;
+        return await this.insertContent(record, contentData.contentType, contentData.contentId)
       }
-
-      console.log(history)
-      if (contentData.contentType === 'movie') {
-        const movie = await this.movieModel.findOne({ _id: contentData.contentId });
-        history.movies.push(movie);
-      } else if (contentData.contentType === 'series') {
-        const series = await this.serieModel.findOne({ _id: contentData.contentId });
-        history.series.push(series);
-      }
-      await history.save()
+      return await this.insertContent(history, contentData.contentType, contentData.contentId)
 
     } catch (err) {
       console.error(err.message);
       console.error(err.stack);
+      throw new InternalServerErrorException()
     }
   }
 
-  async insertContent (contentType, contentId) {
+  private async insertContent (record: History, contentType, contentId): Promise<boolean> {
+    try {
+      if (this.isDuplicated(record, contentType, contentId)) {
+        return true
+      }
+
+      if (contentType === 'movie') {
+        const movie = await this.movieModel.findOne({ _id: contentId });
+        record.movies.push(movie);
+      } else if (contentType === 'series') {
+        const series = await this.serieModel.findOne({ _id: contentId });
+        record.series.push(series);
+      }
+      const saved = await record.save()
+      return !!saved
+    } catch (err) {
+      console.log(err.message)
+      console.log(err.stack)
+      throw new InternalServerErrorException()
+    }
+  }
+
+  private isDuplicated (document: History, contentType, contentId): boolean {
     if (contentType === 'movie') {
-      const movie = await this.movieModel.findOne({ _id: contentId });
-      history.movies.push(movie);
-    } else if (contentType === 'series') {
-      const series = await this.serieModel.findOne({ _id: contentId });
-      history.series.push(series);
+      return document.movies.includes(contentId)
+    }
+
+    if (contentType === 'series') {
+      return document.series.includes(contentId)
     }
   }
 }
