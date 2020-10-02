@@ -64,14 +64,16 @@ export class AuthService {
     console.log('Debo de autenticar?', isMatch);
     if (!isMatch) throw new UnauthorizedException('invalid_credentials');
     const payload: IJwtPayload = {
+      name: user.name,
       email: user.email,
+      confirmed: user.confirmed,
+      suspended: user.suspended,
     };
     const token = await this._jwtService.sign(payload);
     return plainToClass(SigninResponseDto, {
       accessToken: token,
       name: user.name,
       email: user.email,
-      suspended: user.suspended,
     });
   }
 
