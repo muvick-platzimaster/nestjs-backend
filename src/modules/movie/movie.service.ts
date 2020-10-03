@@ -11,6 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { MyListService } from '../my-list/my-list.service';
+import { MovieWatchDto } from './dtos/movie-watch.dto';
 
 @Injectable()
 export class MovieService {
@@ -146,5 +147,19 @@ export class MovieService {
     const theMovieCreated = new this._movieModel(toSave);
     await theMovieCreated.save();
     return theMovieCreated;
+  }
+
+  async watch(movie: number): Promise<MovieWatchDto> {
+    const url = `${this.TMDB_URL}/movie/${movie}/videos`;
+
+    const request = await axios.get(url, {
+      headers: this.utilService.insertRequestHeaders(),
+    });
+
+    const data = request.data.results[0];
+    if (data.site === 'YouTube') {
+      return plainToClass(MovieWatchDto, { id: movie, url: `https://www.youtube.com/embed/${data.key}`})
+    }
+
   }
 }
