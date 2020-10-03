@@ -59,9 +59,9 @@ export class MyListService {
     let myList = await this._myListModel.findOne({ email });
     if (!myList) throw new NotFoundException('my_list_not_found');
     if (isMovie) {
-      this.removeMovie(myList, theEntertaiment);
+      await this.removeMovie(myList, theEntertaiment);
     } else {
-      this.removeSerie(myList, theEntertaiment);
+      await this.removeSerie(myList, theEntertaiment);
     }
     return this.findAll(email);
   }
