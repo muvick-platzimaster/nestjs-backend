@@ -175,20 +175,20 @@ export class MovieService {
   }
 
   async populate() {
-    // let page = 0;
-    // let theList;
-    // do {
-    //   theList = await this.call('discover/movie', { page: ++page });
-    //   if (theList.results.length > 0) {
-    //     theList.results.forEach(movie => {
-    //       this.getMovie({ id: movie.id });
-    //     });
-    //   }
-    // } while (theList.total_pages > page);
-    const start = 100000;
-    const end = 200000;
-    for (let i = start; i < end; ++i) {
-      this.getMovie({ id: i });
-    }
+    let page = 0;
+    let theList;
+    do {
+      theList = await this.call('discover/movie', { page: ++page });
+      if (theList.results.length > 0) {
+        theList.results.forEach(movie => {
+          this.getMovie({ id: movie.id });
+        });
+      }
+    } while (theList.total_pages > page);
+    // const start = 100000;
+    // const end = 200000;
+    // for (let i = start; i < end; ++i) {
+    //   this.getMovie({ id: i });
+    // }
   }
 }

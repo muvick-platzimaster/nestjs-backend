@@ -21,6 +21,9 @@ export class SerieDetailDto {
   readonly original_name: string;
   @Expose()
   @ApiProperty()
+  readonly name: string;
+  @Expose()
+  @ApiProperty()
   readonly overview: string;
   @Expose()
   @ApiProperty()
