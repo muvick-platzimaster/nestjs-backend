@@ -39,7 +39,7 @@ export class MovieController {
   ): Promise<MovieResponseDto> {
     return this._movieService.findAll({
       query,
-      genres: [parseInt(genre.toString())],
+      genres: genre ? [parseInt(genre.toString())] : [],
       language,
       page,
     });
