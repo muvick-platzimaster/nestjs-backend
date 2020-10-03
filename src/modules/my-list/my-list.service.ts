@@ -44,9 +44,9 @@ export class MyListService {
       });
     }
     if (isMovie) {
-      this.addMovie(myList, theEntertaiment);
+      await this.addMovie(myList, theEntertaiment);
     } else {
-      this.addSerie(myList, theEntertaiment);
+      await this.addSerie(myList, theEntertaiment);
     }
     return this.findAll(email);
   }

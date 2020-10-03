@@ -15,6 +15,8 @@ export class Serie extends Document {
   @Prop()
   readonly original_name: string;
   @Prop()
+  readonly name: string;
+  @Prop()
   readonly overview: string;
   @Prop()
   readonly popularity: number;

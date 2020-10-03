@@ -15,6 +15,8 @@ export class Movie extends Document {
   @Prop()
   original_title: string;
   @Prop()
+  title: string;
+  @Prop()
   overview: string;
   @Prop()
   popularity: number;
