@@ -12,6 +12,9 @@ import { Model } from 'mongoose';
 import { MyList } from '../my-list/schemas/my-list.schema';
 import { Serie } from './schemas/serie.schema';
 import { MyListService } from '../my-list/my-list.service';
+import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
+import { SerieResponseDto } from './dtos/serie-response.dto';
+import { MyListDto } from '../my-list/dtos/my-list.dto';
 @Injectable()
 export class SerieService {
   private TMDB_URL: string;
@@ -29,12 +32,30 @@ export class SerieService {
     return this.call('tv/top_rated', filter);
   }
 
-  findPopular(filter: SerieFilterDto) {
-    return this.call('tv/popular', filter);
+  async findPopular(filter: SerieFilterDto) {
+    const theMovies = await this._serieModel
+      .find()
+      .sort({ popularity: -1 })
+      .limit(50)
+      .exec();
+    const response = new SerieResponseDto();
+    response.results = theMovies.map(m => plainToClass(SerieDto, m));
+    return response;
+    //return this.call('tv/popular', filter);
   }
 
   async findAll(filter: SerieFilterDto) {
-    return this.call('discover/tv', filter);
+    const theSeries = await this._serieModel
+      .find({
+        ...queryBuildILike('original_name', filter.query),
+        ...queryBuildIn('genres.id', filter.genres),
+      })
+      .limit(50)
+      .exec();
+    const response = new SerieResponseDto();
+    response.results = theSeries.map(m => plainToClass(SerieDto, m));
+    return response;
+    // return this.call('discover/tv', filter);
   }
 
   async findById(filter: SerieFilterDto) {
@@ -62,10 +83,11 @@ export class SerieService {
     query.push(this.queryString('query', filter.query));
     query.push(this.queryList('with_genres', filter.genres));
     query.push(this.queryString('language', filter.language));
+    query.push(this.queryString('page', !filter.page ? 1 : filter.page));
     return query.filter(Boolean).join('&');
   }
 
-  private queryString(key: string, value: string) {
+  private queryString(key: string, value: any) {
     if (value) {
       return `${key}=${value}`;
     }
@@ -94,14 +116,14 @@ export class SerieService {
     };
   }
 
-  async add(serieId: number, email: any): Promise<boolean> {
+  async add(serieId: number, email: any): Promise<MyListDto> {
     console.log(`Add the serieId: ${serieId} to the ${email} list`);
     const theSerie = await this.getSerie({ id: serieId });
     if (!theSerie) throw new NotFoundException('serie_not_found');
     return this._myListService.add(email, theSerie, false);
   }
 
-  async remove(serieId: number, email: string): Promise<boolean> {
+  async remove(serieId: number, email: string): Promise<MyListDto> {
     const theSerie = await this._serieModel.findOne({ id: serieId });
     if (!theSerie) throw new NotFoundException('serie_not_found');
     return this._myListService.remove(email, theSerie, false);
@@ -111,15 +133,16 @@ export class SerieService {
     try {
       return await this.getFromDB(filter.id);
     } catch (e) {
-      console.log('The serie is not in DB. Search in API');
+      console.log(`The serie ${filter.id} is not in DB. Search in API`);
       try {
         const fromAPI = await this.getFromAPI(filter.id);
         if (fromAPI) {
-          return this.storeInDB(fromAPI);
+          if (fromAPI.poster_path && fromAPI.poster_path != null)
+            return this.storeInDB(fromAPI);
         }
         return fromAPI;
       } catch (e) {
-        console.error('Serie not found', e.response.data);
+        console.error(`Serie ${filter.id} not found`, e.response.data);
         return;
       }
     }
@@ -148,5 +171,22 @@ export class SerieService {
     const theSerieCreated = new this._serieModel(toSave);
     await theSerieCreated.save();
     return theSerieCreated;
+  }
+
+  async populate() {
+    // let page = 0;
+    // let theList;
+    // do {
+    //   theList = await this.call('discover/tv', { page: ++page });
+    //   if (theList.results.length > 0) {
+    //     theList.results.forEach(serie => {
+    //       this.getSerie({ id: serie.id });
+    //     });
+    //   }
+    // } while (theList.total_pages > page);
+    const max = 100000;
+    for (let i = 0; i < max; ++i) {
+      this.getSerie({ id: i });
+    }
   }
 }

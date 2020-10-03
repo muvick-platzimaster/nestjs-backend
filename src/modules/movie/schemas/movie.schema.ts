@@ -23,6 +23,8 @@ export class Movie extends Document {
   @Prop()
   runtime: number;
   @Prop()
+  vote_average: number;
+  @Prop()
   readonly genres: GenreDto[];
 }
 

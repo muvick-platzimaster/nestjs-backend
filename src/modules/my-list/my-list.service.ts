@@ -34,7 +34,7 @@ export class MyListService {
     email: string,
     theEntertaiment: Movie | Serie,
     isMovie: boolean,
-  ): Promise<boolean> {
+  ): Promise<MyListDto> {
     let myList = await this._myListModel.findOne({ email });
     if (!myList) {
       myList = new this._myListModel({
@@ -43,27 +43,35 @@ export class MyListService {
         series: [],
       });
     }
-    if (isMovie) return this.addMovie(myList, theEntertaiment);
-    return this.addSerie(myList, theEntertaiment);
+    if (isMovie) {
+      this.addMovie(myList, theEntertaiment);
+    } else {
+      this.addSerie(myList, theEntertaiment);
+    }
+    return this.findAll(email);
   }
 
   async remove(
     email: string,
     theEntertaiment: Movie | Serie,
     isMovie: boolean,
-  ): Promise<boolean> {
+  ): Promise<MyListDto> {
     let myList = await this._myListModel.findOne({ email });
     if (!myList) throw new NotFoundException('my_list_not_found');
-    if (isMovie) return this.removeMovie(myList, theEntertaiment);
-    return this.removeSerie(myList, theEntertaiment);
+    if (isMovie) {
+      this.removeMovie(myList, theEntertaiment);
+    } else {
+      this.removeSerie(myList, theEntertaiment);
+    }
+    return this.findAll(email);
   }
 
-  private async addMovie(theList: MyList, theMovie) {
+  private async addMovie(theList: MyList, theMovie): Promise<MyListDto> {
     if (!theList.movies.includes(theMovie._id.toString())) {
       theList.movies.push(theMovie);
       await theList.save();
     }
-    return true;
+    return plainToClass(MyListDto, theList);
   }
   private async removeMovie(theList: MyList, theMovie) {
     console.log('La lista', theList);

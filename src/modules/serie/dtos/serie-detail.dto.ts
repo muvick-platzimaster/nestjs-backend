@@ -32,6 +32,9 @@ export class SerieDetailDto {
   @ApiProperty()
   readonly vote_count: number;
   @Expose()
+  @ApiProperty()
+  readonly vote_average: number;
+  @Expose()
   @ApiProperty({ type: GenreDto, isArray: true })
   readonly genres: GenreDto[];
 }

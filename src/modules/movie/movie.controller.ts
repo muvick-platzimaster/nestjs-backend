@@ -19,6 +19,7 @@ import { MovieService } from './movie.service';
 import { MovieResponseDto } from './dtos/movie-response.dto';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { MyListDto } from '../my-list/dtos/my-list.dto';
 
 @ApiTags('The movies')
 @Controller('movies')
@@ -38,7 +39,7 @@ export class MovieController {
   ): Promise<MovieResponseDto> {
     return this._movieService.findAll({
       query,
-      genres: [genre],
+      genres: [parseInt(genre.toString())],
       language,
       page,
     });
@@ -94,7 +95,7 @@ export class MovieController {
     description: 'True when the movie was added or False when didnt',
   })
   @UseGuards(AuthGuard('jwt'))
-  addMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
+  addMovie(@Param('movieId') movieId: number, @Req() req): Promise<MyListDto> {
     return this._movieService.add(movieId, req.user.email);
   }
 
@@ -105,7 +106,10 @@ export class MovieController {
     description: 'True when the movie was deleted or False when didnt',
   })
   @UseGuards(AuthGuard('jwt'))
-  removeMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
+  removeMovie(
+    @Param('movieId') movieId: number,
+    @Req() req,
+  ): Promise<MyListDto> {
     return this._movieService.remove(movieId, req.user.email);
   }
 
