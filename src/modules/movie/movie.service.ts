@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
@@ -158,8 +158,11 @@ export class MovieService {
 
     const data = request.data.results[0];
     if (data.site === 'YouTube') {
-      return plainToClass(MovieWatchDto, { id: movie, url: `https://www.youtube.com/embed/${data.key}`})
+      return plainToClass(MovieWatchDto, {
+        id: movie,
+        url: `https://www.youtube.com/embed/${data.key}`,
+      });
     }
-
+    throw new InternalServerErrorException('video_not_found');
   }
 }
