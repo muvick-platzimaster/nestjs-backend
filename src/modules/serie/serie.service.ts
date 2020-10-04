@@ -47,7 +47,7 @@ export class SerieService {
   async findAll(filter: SerieFilterDto) {
     const theSeries = await this._serieModel
       .find({
-        ...queryBuildILike('original_name', filter.query),
+        ...queryBuildILike('name', filter.query),
         ...queryBuildIn('genres.id', filter.genres),
       })
       .limit(50)
@@ -174,19 +174,19 @@ export class SerieService {
   }
 
   async populate() {
-    // let page = 0;
-    // let theList;
-    // do {
-    //   theList = await this.call('discover/tv', { page: ++page });
-    //   if (theList.results.length > 0) {
-    //     theList.results.forEach(serie => {
-    //       this.getSerie({ id: serie.id });
-    //     });
-    //   }
-    // } while (theList.total_pages > page);
-    const max = 100000;
-    for (let i = 0; i < max; ++i) {
-      this.getSerie({ id: i });
-    }
+    let page = 0;
+    let theList;
+    do {
+      theList = await this.call('discover/tv', { page: ++page });
+      if (theList.results.length > 0) {
+        theList.results.forEach(serie => {
+          this.getSerie({ id: serie.id });
+        });
+      }
+    } while (theList.total_pages > page);
+    // const max = 100000;
+    // for (let i = 0; i < max; ++i) {
+    //   this.getSerie({ id: i });
+    // }
   }
 }

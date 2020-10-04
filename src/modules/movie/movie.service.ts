@@ -54,7 +54,7 @@ export class MovieService {
   async findAll(filter: MovieFilterDto) {
     const theMovies = await this._movieModel
       .find({
-        ...queryBuildILike('original_title', filter.query),
+        ...queryBuildILike('title', filter.query),
         ...queryBuildIn('genres.id', filter.genres),
       })
       .limit(50)

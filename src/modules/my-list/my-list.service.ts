@@ -66,16 +66,14 @@ export class MyListService {
     return this.findAll(email);
   }
 
-  private async addMovie(theList: MyList, theMovie): Promise<MyListDto> {
+  private async addMovie(theList: MyList, theMovie): Promise<boolean> {
     if (!theList.movies.includes(theMovie._id.toString())) {
       theList.movies.push(theMovie);
       await theList.save();
     }
-    return plainToClass(MyListDto, theList);
+    return true;
   }
-  private async removeMovie(theList: MyList, theMovie) {
-    console.log('La lista', theList);
-    console.log('La pelicula', theMovie);
+  private async removeMovie(theList: MyList, theMovie): Promise<boolean> {
     const newMovies = theList.movies.filter(
       movie => movie != theMovie._id.toString(),
     );
@@ -83,7 +81,7 @@ export class MyListService {
     await theList.save();
     return true;
   }
-  private async addSerie(theList: MyList, theSerie) {
+  private async addSerie(theList: MyList, theSerie): Promise<boolean> {
     if (!theList.series.includes(theSerie._id.toString())) {
       theList.series.push(theSerie);
       await theList.save();
@@ -91,7 +89,7 @@ export class MyListService {
     return true;
   }
 
-  private async removeSerie(theList: MyList, theSerie) {
+  private async removeSerie(theList: MyList, theSerie): Promise<boolean> {
     const newSeries = theList.series.filter(
       serie => serie != theSerie._id.toString(),
     );
