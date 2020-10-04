@@ -18,6 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
 @ApiTags('The series')
 @Controller('series')
@@ -65,14 +66,14 @@ export class SerieController {
 
   @Post(':serieId')
   @ApiOperation({ summary: 'Add the serie to my list' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
   addMovie(@Param('serieId') serieId: number, @Req() req): Promise<boolean> {
     return this._serieService.add(serieId, req.user.email);
   }
 
   @Delete(':serieId')
   @ApiOperation({ summary: 'Removes the serie from my list' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
   removeMovie(@Param('serieId') serieId: number, @Req() req): Promise<boolean> {
     return this._serieService.remove(serieId, req.user.email);
   }
