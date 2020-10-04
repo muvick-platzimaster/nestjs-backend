@@ -18,6 +18,7 @@ import { MovieService } from './movie.service';
 import { MovieResponseDto } from './dtos/movie-response.dto';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
 @ApiTags('The movies')
 @Controller('movies')
@@ -90,7 +91,7 @@ export class MovieController {
     type: Boolean,
     description: 'True when the movie was added or False when didnt',
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
   addMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
     return this._movieService.add(movieId, req.user.email);
   }
@@ -101,7 +102,7 @@ export class MovieController {
     type: Boolean,
     description: 'True when the movie was deleted or False when didnt',
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
   removeMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
     return this._movieService.remove(movieId, req.user.email);
   }
