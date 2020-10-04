@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { ConfigEnum } from './config/config.keys';
-import { UserModule } from './modules/user/user.module';
 import { MovieModule } from './modules/movie/movie.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -11,11 +10,11 @@ import { UtilModule } from './util/util.module';
 import { SerieModule } from './modules/serie/serie.module';
 import { MyListModule } from './modules/my-list/my-list.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { HistoryModule } from './modules/history/history.module';
 
 @Module({
   imports: [
     ConfigModule,
-    // UserModule,
     MovieModule,
     SerieModule,
     DatabaseModule,
@@ -23,8 +22,10 @@ import { ScheduleModule } from '@nestjs/schedule';
     GenreModule,
     UtilModule,
     MyListModule,
+    HistoryModule,
     ScheduleModule.forRoot(),
   ],
+  providers: [],
 })
 export class AppModule {
   static PORT: number | string;

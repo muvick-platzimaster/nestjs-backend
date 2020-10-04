@@ -20,6 +20,7 @@ import { MovieResponseDto } from './dtos/movie-response.dto';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
+import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
 @ApiTags('The movies')
 @Controller('movies')
@@ -91,7 +92,7 @@ export class MovieController {
   @Post(':movieId')
   @ApiOperation({ summary: 'Add the movie to my list' })
   @ApiOkResponse({ type: MyListDto })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
   addMovie(@Param('movieId') movieId: number, @Req() req): Promise<MyListDto> {
     return this._movieService.add(movieId, req.user.email);
   }
@@ -99,7 +100,7 @@ export class MovieController {
   @Delete(':movieId')
   @ApiOperation({ summary: 'Removes the movie from my list' })
   @ApiOkResponse({ type: MyListDto })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
   removeMovie(
     @Param('movieId') movieId: number,
     @Req() req,
