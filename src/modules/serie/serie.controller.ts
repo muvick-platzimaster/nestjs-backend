@@ -39,7 +39,7 @@ export class SerieController {
   ): Promise<SerieResponseDto> {
     return this._serieService.findAll({
       query,
-      genres: [parseInt(genre.toString())],
+      genres: genre ? [parseInt(genre.toString())] : [],
       language,
     });
   }

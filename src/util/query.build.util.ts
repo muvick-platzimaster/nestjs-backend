@@ -2,7 +2,7 @@ export const queryBuildILike = (myKey: string, value: any) => {
   return !value
     ? {}
     : Object.defineProperty({}, myKey, {
-        value: new RegExp('^' + value + '$', 'i'),
+        value: new RegExp(value, 'i'),
         enumerable: true,
       });
 };
