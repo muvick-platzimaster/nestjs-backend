@@ -67,6 +67,7 @@ export class SerieController {
 
   @Post(':serieId')
   @ApiOperation({ summary: 'Add the serie to my list' })
+  @ApiOkResponse({ type: MyListDto })
   @UseGuards(AuthGuard('jwt'))
   addMovie(@Param('serieId') serieId: number, @Req() req): Promise<MyListDto> {
     return this._serieService.add(serieId, req.user.email);
@@ -74,16 +75,12 @@ export class SerieController {
 
   @Delete(':serieId')
   @ApiOperation({ summary: 'Removes the serie from my list' })
+  @ApiOkResponse({ type: MyListDto })
   @UseGuards(AuthGuard('jwt'))
   removeMovie(
     @Param('serieId') serieId: number,
     @Req() req,
   ): Promise<MyListDto> {
     return this._serieService.remove(serieId, req.user.email);
-  }
-
-  @Patch('populate')
-  populate() {
-    this._serieService.populate();
   }
 }

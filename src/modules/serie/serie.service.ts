@@ -177,16 +177,19 @@ export class SerieService {
     let page = 0;
     let theList;
     do {
-      theList = await this.call('discover/tv', { page: ++page });
+      theList = await this.call('discover/tv', {
+        page: ++page,
+      });
       if (theList.results.length > 0) {
         theList.results.forEach(serie => {
           this.getSerie({ id: serie.id });
         });
       }
     } while (theList.total_pages > page);
-    // const max = 100000;
-    // for (let i = 0; i < max; ++i) {
-    //   this.getSerie({ id: i });
+    // const start = 100000;
+    // const end = 200000;
+    // for (let i = start; i < end; ++i) {
+    //   this.getMovie({ id: i });
     // }
   }
 }

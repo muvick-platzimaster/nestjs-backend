@@ -90,10 +90,7 @@ export class MovieController {
 
   @Post(':movieId')
   @ApiOperation({ summary: 'Add the movie to my list' })
-  @ApiOkResponse({
-    type: Boolean,
-    description: 'True when the movie was added or False when didnt',
-  })
+  @ApiOkResponse({ type: MyListDto })
   @UseGuards(AuthGuard('jwt'))
   addMovie(@Param('movieId') movieId: number, @Req() req): Promise<MyListDto> {
     return this._movieService.add(movieId, req.user.email);
@@ -101,20 +98,12 @@ export class MovieController {
 
   @Delete(':movieId')
   @ApiOperation({ summary: 'Removes the movie from my list' })
-  @ApiOkResponse({
-    type: Boolean,
-    description: 'True when the movie was deleted or False when didnt',
-  })
+  @ApiOkResponse({ type: MyListDto })
   @UseGuards(AuthGuard('jwt'))
   removeMovie(
     @Param('movieId') movieId: number,
     @Req() req,
   ): Promise<MyListDto> {
     return this._movieService.remove(movieId, req.user.email);
-  }
-
-  @Patch('populate')
-  populate() {
-    this._movieService.populate();
   }
 }
