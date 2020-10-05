@@ -1,7 +1,21 @@
-import { Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { SerieService } from './serie.service';
 import { SerieResponseDto } from './dtos/serie-response.dto';
-import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { SerieWatchDto } from './dtos/serie-watch.dto';
@@ -11,8 +25,7 @@ import { SuspendedGuard } from '../auth/guards/suspended.guard';
 @ApiTags('The series')
 @Controller('series')
 export class SerieController {
-  constructor(private readonly _serieService: SerieService) {
-  }
+  constructor(private readonly _serieService: SerieService) {}
 
   @Get()
   @ApiOperation({ summary: 'Retrieves the series' })

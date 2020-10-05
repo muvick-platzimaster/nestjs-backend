@@ -1,19 +1,18 @@
 import {
   Controller,
+  Delete,
   Get,
-  Query,
   Param,
   Post,
-  UseGuards,
-  Delete,
+  Query,
   Req,
-  Patch,
+  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags,
   ApiOkResponse,
-  ApiQuery,
   ApiOperation,
+  ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 import { MovieService } from './movie.service';
 import { MovieResponseDto } from './dtos/movie-response.dto';
@@ -27,6 +26,7 @@ import { SuspendedGuard } from '../auth/guards/suspended.guard';
 @Controller('movies')
 export class MovieController {
   constructor(private readonly _movieService: MovieService) {}
+
   @Get()
   @ApiQuery({ name: 'query', required: false })
   @ApiQuery({ name: 'genre', required: false })
@@ -116,9 +116,9 @@ export class MovieController {
   }
 
   @Get(':movieId/watch')
-  @ApiOkResponse({type: MovieWatchDto})
+  @ApiOkResponse({ type: MovieWatchDto })
   @UseGuards(AuthGuard('jwt'))
-  watch(@Param('movieId') movieId: number): Promise<MovieWatchDto>{
-    return this._movieService.watch(movieId)
+  watch(@Param('movieId') movieId: number): Promise<MovieWatchDto> {
+    return this._movieService.watch(movieId);
   }
 }
