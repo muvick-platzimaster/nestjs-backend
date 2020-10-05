@@ -19,6 +19,7 @@ import { MovieService } from './movie.service';
 import { MovieResponseDto } from './dtos/movie-response.dto';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { MovieWatchDto } from './dtos/movie-watch.dto';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
 import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
@@ -106,5 +107,12 @@ export class MovieController {
     @Req() req,
   ): Promise<MyListDto> {
     return this._movieService.remove(movieId, req.user.email);
+  }
+
+  @Get(':movieId/watch')
+  @ApiOkResponse({type: MovieWatchDto})
+  @UseGuards(AuthGuard('jwt'))
+  watch(@Param('movieId') movieId: number): Promise<MovieWatchDto>{
+    return this._movieService.watch(movieId)
   }
 }
