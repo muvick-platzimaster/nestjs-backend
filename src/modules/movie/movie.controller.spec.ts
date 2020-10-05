@@ -1,18 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MovieController } from './movie.controller';
+import { MovieService } from './movie.service';
+import { MovieResponseDto } from './dtos/movie-response.dto';
 
 describe('MovieController', () => {
-  let controller: MovieController;
+  let movieController: MovieController;
+  let movieService: MovieService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MovieController],
+      providers: [MovieService],
     }).compile();
 
-    controller = module.get<MovieController>(MovieController);
+    movieController = module.get<MovieController>(MovieController);
+    movieService = module.get<MovieService>(MovieService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(movieController).toBeDefined();
+  });
+
+  describe('findAll', () => {
+    it('should return an array of movies', async () => {
+      const result = new MovieResponseDto();
+      jest.spyOn(movieService, 'findAll').mockImplementation(() => result);
+
+      expect(await movieController.getAll()).toBe(result);
+    });
   });
 });
