@@ -21,12 +21,11 @@ before_script:
 
 script:
   - npm run build
-  - npm run start:dev
 
 deploy:
   provider: heroku
   api_key: $API_KEY_HEROKU
-  local_dir: ./dist/
+  local_dir: dist/
   skip_cleanup: true
   app: muvick-backend
   on:
