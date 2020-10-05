@@ -31,7 +31,7 @@ export class User extends Document {
   pin: string;
 
   @Prop({ default: 'es' })
-  language: string
+  language: string;
 
   @Prop({ default: Date.now() })
   createdAt: Date;

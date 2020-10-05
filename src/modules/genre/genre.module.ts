@@ -7,11 +7,12 @@ import { ConfigModule } from '../../config/config.module';
 import { UtilModule } from '../../util/util.module';
 
 @Module({
-  imports: [ConfigModule, MongooseModule.forFeature([{ name: 'genre', schema: GenreSchema }]),
+  imports: [
+    ConfigModule,
+    MongooseModule.forFeature([{ name: 'genre', schema: GenreSchema }]),
     UtilModule,
   ],
   controllers: [GenreController],
   providers: [GenreService],
 })
-export class GenreModule {
-}
+export class GenreModule {}

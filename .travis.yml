@@ -1,0 +1,28 @@
+language: node_js
+
+node_js:
+  - lts/*
+
+git:
+  depth: 3
+
+branches:
+  only:
+    - main
+
+before_script:
+  - npm run format
+  - npm run lint
+  - npm run test
+
+script:
+  - npm run build
+  - npm run start:dev
+
+deploy:
+  provider: heroku
+  api_key: $API_KEY_HEROKU
+  app: muvick-backend
+  on:
+    branch: main
+

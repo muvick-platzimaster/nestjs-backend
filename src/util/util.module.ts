@@ -5,8 +5,6 @@ import { ConfigModule } from '../config/config.module';
 @Module({
   imports: [ConfigModule],
   providers: [UtilService],
-  exports: [UtilService]
+  exports: [UtilService],
 })
-
-export class UtilModule {
-}
+export class UtilModule {}

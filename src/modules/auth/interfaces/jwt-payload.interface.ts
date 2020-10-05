@@ -1,7 +1,7 @@
 export interface IJwtPayload {
-  name: string
+  name: string;
   email: string;
-  confirmed: boolean
-  suspended: boolean
+  confirmed: boolean;
+  suspended: boolean;
   iat?: Date;
 }

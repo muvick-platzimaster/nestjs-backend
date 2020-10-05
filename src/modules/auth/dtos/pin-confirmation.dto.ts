@@ -5,11 +5,11 @@ export class PinConfirmationDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
-  email: string
+  email: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(4, 4)
-  pin: string
+  pin: string;
 }

@@ -6,11 +6,9 @@ import { MyListSchema } from './schemas/my-list.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: 'list', schema: MyListSchema }]),
+    MongooseModule.forFeature([{ name: 'list', schema: MyListSchema }]),
   ],
   controllers: [MyListController],
   providers: [MyListService],
 })
-export class MyListModule {
-}
+export class MyListModule {}

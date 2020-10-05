@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { History } from './schema/history.schema';
 import { Model } from 'mongoose';
@@ -6,26 +10,41 @@ import { HistoryAddDto } from './dtos/history-add.dto';
 import { Movie } from '../movie/schemas/movie.schema';
 import { Serie } from '../serie/schemas/serie.schema';
 
-
 @Injectable()
 export class HistoryService {
-  constructor(@InjectModel('history') private historyModel: Model<History>, @InjectModel('movie') private movieModel: Model<Movie>, @InjectModel('serie') private serieModel: Model<Serie>) {
-  }
+  constructor(
+    @InjectModel('history') private historyModel: Model<History>,
+    @InjectModel('movie') private movieModel: Model<Movie>,
+    @InjectModel('serie') private serieModel: Model<Serie>,
+  ) {}
 
   async add(contentData: HistoryAddDto): Promise<boolean> {
-    const history = await this.historyModel.findOne({ email: contentData.email });
+    const history = await this.historyModel.findOne({
+      email: contentData.email,
+    });
     if (!history) {
       const record = new this.historyModel();
       record.email = contentData.email;
       record.movies = [];
       record.series = [];
-      return await this.insertContent(record, contentData.contentType, contentData.contentId);
+      return await this.insertContent(
+        record,
+        contentData.contentType,
+        contentData.contentId,
+      );
     }
-    return await this.insertContent(history, contentData.contentType, contentData.contentId);
-
+    return await this.insertContent(
+      history,
+      contentData.contentType,
+      contentData.contentId,
+    );
   }
 
-  private async insertContent(record: History, contentType, contentId): Promise<boolean> {
+  private async insertContent(
+    record: History,
+    contentType,
+    contentId,
+  ): Promise<boolean> {
     if (this.isDuplicated(record, contentType, contentId)) {
       return true;
     }
@@ -44,7 +63,11 @@ export class HistoryService {
     throw new BadRequestException('contentType_not_allowed');
   }
 
-  private async addContentToHistory(record: History, contentType, contentId): Promise<boolean> {
+  private async addContentToHistory(
+    record: History,
+    contentType,
+    contentId,
+  ): Promise<boolean> {
     if (!record || !contentId) {
       throw new InternalServerErrorException();
     }
@@ -68,6 +91,5 @@ export class HistoryService {
     } else {
       throw new InternalServerErrorException('contentType_not_allowed');
     }
-
   }
 }

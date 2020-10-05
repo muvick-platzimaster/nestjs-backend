@@ -30,7 +30,7 @@ import { UtilModule } from '../../util/util.module';
       },
     }),
     UtilModule,
-    ConfigModule
+    ConfigModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, ConfigService],

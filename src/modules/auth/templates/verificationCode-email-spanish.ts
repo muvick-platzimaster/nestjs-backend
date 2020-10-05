@@ -209,5 +209,4 @@ export function generateVerificationCodeTemplate(name, code) {
     </body>
   </html>
   `;
-
 }

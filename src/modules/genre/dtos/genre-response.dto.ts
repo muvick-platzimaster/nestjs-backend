@@ -3,5 +3,5 @@ import { GenreDto } from './genre.dto';
 
 export class GenreResponseDto {
   @Expose()
-  results: GenreDto[]
+  results: GenreDto[];
 }
