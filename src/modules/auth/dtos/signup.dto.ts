@@ -17,13 +17,11 @@ export class SignupDto {
     maxLength: 20,
     required: true,
   })
-
   password: string;
 
   @ApiProperty({
     description: 'Languages available: es (spanish), en (English)',
-    required: false
+    required: false,
   })
-
-  language:string
+  language: string;
 }

@@ -6,16 +6,14 @@ import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('History')
 @Controller('history')
 export class HistoryController {
-  constructor(private _historyService: HistoryService) {
-  }
+  constructor(private _historyService: HistoryService) {}
 
   @ApiCreatedResponse({
-    description: 'It returns a boolean if the content is added to the user' +
-      ' history',
+    description:
+      'It returns a boolean if the content is added to the user' + ' history',
   })
   @Post()
   async add(@Body() contentData: HistoryAddDto): Promise<boolean> {
     return this._historyService.add(contentData);
   }
-
 }

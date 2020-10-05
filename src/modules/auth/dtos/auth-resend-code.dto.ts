@@ -6,5 +6,5 @@ export class AuthResendCodeDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  email: string
+  email: string;
 }

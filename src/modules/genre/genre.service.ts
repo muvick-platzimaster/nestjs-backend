@@ -12,7 +12,8 @@ export class GenreService {
 
   constructor(
     private _utilsService: UtilService,
-    private _configService: ConfigService) {
+    private _configService: ConfigService,
+  ) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
@@ -32,10 +33,10 @@ export class GenreService {
   }
 
   private transformToDTO({ genres }) {
-    const genreList = genres.map(genre => plainToClass(GenreDto, genre))
+    const genreList = genres.map(genre => plainToClass(GenreDto, genre));
 
     return {
-      results: genreList
-    }
+      results: genreList,
+    };
   }
 }

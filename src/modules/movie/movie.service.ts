@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigEnum } from 'src/config/config.keys';
 import axios from 'axios';
@@ -11,6 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, DocumentQuery } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { MyListService } from '../my-list/my-list.service';
+import { MovieWatchDto } from './dtos/movie-watch.dto';
 import { MovieResponseDto } from './dtos/movie-response.dto';
 import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
@@ -172,6 +173,23 @@ export class MovieService {
     const theMovieCreated = new this._movieModel(toSave);
     await theMovieCreated.save();
     return theMovieCreated;
+  }
+
+  async watch(movie: number): Promise<MovieWatchDto> {
+    const url = `${this.TMDB_URL}/movie/${movie}/videos`;
+
+    const request = await axios.get(url, {
+      headers: this.utilService.insertRequestHeaders(),
+    });
+
+    const data = request.data.results[0];
+    if (data.site === 'YouTube') {
+      return plainToClass(MovieWatchDto, {
+        id: movie,
+        url: `https://www.youtube.com/embed/${data.key}`,
+      });
+    }
+    throw new InternalServerErrorException('video_not_found');
   }
 
   async populate() {

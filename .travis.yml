@@ -1,0 +1,32 @@
+language: node_js
+
+node_js:
+  - lts/*
+
+git:
+  depth: 3
+
+notifications:
+  email:
+    - $MAIN_EMAIL
+
+branches:
+  only:
+    - main
+    - develop
+
+before_script:
+  - npm run format
+  - npm run lint
+
+script:
+  - npm run build
+
+deploy:
+  provider: heroku
+  api_key: $API_KEY_HEROKU
+  local_dir: dist/
+  app: muvick-backend
+  on:
+    branch: main
+

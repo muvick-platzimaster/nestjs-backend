@@ -7,9 +7,14 @@ import { SerieSchema } from '../serie/schemas/serie.schema';
 import { MovieSchema } from '../movie/schemas/movie.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'history', schema: HistorySchema }, { name: 'movie', schema: MovieSchema }, { name: 'serie', schema: SerieSchema }])],
+  imports: [
+    MongooseModule.forFeature([
+      { name: 'history', schema: HistorySchema },
+      { name: 'movie', schema: MovieSchema },
+      { name: 'serie', schema: SerieSchema },
+    ]),
+  ],
   providers: [HistoryService],
   controllers: [HistoryController],
 })
-export class HistoryModule {
-}
+export class HistoryModule {}
