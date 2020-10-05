@@ -28,6 +28,8 @@
 
 - NestJS
 - MongoDB
+- JWT
+- Jest
 
 ## Installation
 
