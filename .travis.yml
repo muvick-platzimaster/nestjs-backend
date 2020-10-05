@@ -6,14 +6,18 @@ node_js:
 git:
   depth: 3
 
+notifications:
+  email:
+    - $MAIN_EMAIL
+
 branches:
   only:
     - main
+    - develop
 
 before_script:
   - npm run format
   - npm run lint
-  - npm run test
 
 script:
   - npm run build
@@ -22,7 +26,7 @@ script:
 deploy:
   provider: heroku
   api_key: $API_KEY_HEROKU
-  local_dir: dist/
+  local_dir: ./dist/
   skip_cleanup: true
   app: muvick-backend
   on:
