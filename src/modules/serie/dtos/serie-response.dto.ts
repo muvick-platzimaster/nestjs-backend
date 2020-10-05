@@ -4,5 +4,5 @@ import { SerieDto } from './serie.dto';
 
 export class SerieResponseDto extends PageResultDto {
   @ApiProperty({ type: SerieDto, isArray: true })
-  readonly results: SerieDto[];
+  results: SerieDto[];
 }

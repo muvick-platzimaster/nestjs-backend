@@ -6,7 +6,7 @@ import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
 export class Serie extends Document {
   @Prop({ unique: true })
   readonly id: number;
-  @Prop({ unique: true })
+  @Prop()
   readonly backdrop_path: string;
   @Prop({ unique: true })
   readonly poster_path: string;
@@ -15,11 +15,15 @@ export class Serie extends Document {
   @Prop()
   readonly original_name: string;
   @Prop()
+  readonly name: string;
+  @Prop()
   readonly overview: string;
   @Prop()
   readonly popularity: number;
   @Prop()
   readonly first_air_date: string;
+  @Prop()
+  readonly vote_average: number;
   @Prop()
   readonly genres: GenreDto[];
 }

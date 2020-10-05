@@ -8,10 +8,13 @@ import { MovieDto } from './dtos/movie.dto';
 import { UtilService } from '../../util/util.service';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, DocumentQuery } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { MyListService } from '../my-list/my-list.service';
 import { MovieWatchDto } from './dtos/movie-watch.dto';
+import { MovieResponseDto } from './dtos/movie-response.dto';
+import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
+import { MyListDto } from '../my-list/dtos/my-list.dto';
 
 @Injectable()
 export class MovieService {
@@ -34,8 +37,15 @@ export class MovieService {
     return this.call('movie/top_rated', filter);
   }
 
-  findPopular(filter?: MovieFilterDto) {
-    return this.call('movie/popular', filter);
+  async findPopular(filter?: MovieFilterDto) {
+    const theMovies = await this._movieModel
+      .find()
+      .sort({ popularity: -1 })
+      .limit(50)
+      .exec();
+    const response = new MovieResponseDto();
+    response.results = theMovies.map(m => plainToClass(MovieDto, m));
+    return response;
   }
 
   findRecommendations(filter?: MovieFilterDto) {
@@ -43,7 +53,16 @@ export class MovieService {
   }
 
   async findAll(filter: MovieFilterDto) {
-    return this.call('discover/movie', filter);
+    const theMovies = await this._movieModel
+      .find({
+        ...queryBuildILike('title', filter.query),
+        ...queryBuildIn('genres.id', filter.genres),
+      })
+      .limit(50)
+      .exec();
+    const response = new MovieResponseDto();
+    response.results = theMovies.map(m => plainToClass(MovieDto, m));
+    return response;
   }
 
   async findById(filter: MovieFilterDto) {
@@ -51,14 +70,14 @@ export class MovieService {
     return plainToClass(MovieDetailDto, theMovie);
   }
 
-  async add(movieId: number, email: any): Promise<boolean> {
+  async add(movieId: number, email: any): Promise<MyListDto> {
     console.log(`Add the movieId: ${movieId} to the ${email} list`);
     const theMovie = await this.getMovie({ id: movieId });
     if (!theMovie) throw new NotFoundException('movie_not_found');
     return this._myListService.add(email, theMovie, true);
   }
 
-  async remove(movieId: number, email: string): Promise<boolean> {
+  async remove(movieId: number, email: string): Promise<MyListDto> {
     const theMovie = await this._movieModel.findOne({ id: movieId });
     if (!theMovie) throw new NotFoundException('movie_not_found');
     return this._myListService.remove(email, theMovie, true);
@@ -75,14 +94,15 @@ export class MovieService {
   private buildQuery(filter: MovieFilterDto): string {
     const query = [];
     if (filter) {
-      query.push(this.queryString('query', filter.query));
-      query.push(this.queryList('with_genres', filter.genres));
+      query.push(this.queryString('query', filter.query)); // title
+      query.push(this.queryList('with_genres', filter.genres)); // genre
       query.push(this.queryString('language', filter.language));
+      query.push(this.queryString('page', !filter.page ? 1 : filter.page));
     }
     return query.filter(Boolean).join('&');
   }
 
-  private queryString(key: string, value: string) {
+  private queryString(key: string, value: any) {
     if (value) {
       return `${key}=${value}`;
     }
@@ -115,12 +135,18 @@ export class MovieService {
     try {
       return await this.getFromDB(filter.id);
     } catch (e) {
-      console.log('The movie is not in DB. Search in API');
-      const fromAPI = await this.getFromAPI(filter.id);
-      if (fromAPI) {
-        return this.storeInDB(fromAPI);
+      console.log(`The movie ${filter.id} is not in DB. Search in API`);
+      try {
+        const fromAPI = await this.getFromAPI(filter.id);
+        if (fromAPI) {
+          if (fromAPI.poster_path && fromAPI.poster_path != null)
+            return this.storeInDB(fromAPI);
+        }
+        return fromAPI;
+      } catch (e) {
+        console.error(`Movie ${filter.id} not found`, e.response.data);
+        return;
       }
-      return fromAPI;
     }
   }
 
@@ -164,5 +190,23 @@ export class MovieService {
       });
     }
     throw new InternalServerErrorException('video_not_found');
+  }
+
+  async populate() {
+    let page = 0;
+    let theList;
+    do {
+      theList = await this.call('discover/movie', { page: ++page });
+      if (theList.results.length > 0) {
+        theList.results.forEach(movie => {
+          this.getMovie({ id: movie.id });
+        });
+      }
+    } while (theList.total_pages > page);
+    // const start = 100000;
+    // const end = 200000;
+    // for (let i = start; i < end; ++i) {
+    //   this.getMovie({ id: i });
+    // }
   }
 }

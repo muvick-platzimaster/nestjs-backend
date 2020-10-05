@@ -1,10 +1,22 @@
-import { Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  Req,
+  UseGuards,
+  Post,
+  Delete,
+  Patch,
+} from '@nestjs/common';
 import { SerieService } from './serie.service';
 import { SerieResponseDto } from './dtos/serie-response.dto';
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { SerieWatchDto } from './dtos/serie-watch.dto';
+import { MyListDto } from '../my-list/dtos/my-list.dto';
+import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
 @ApiTags('The series')
 @Controller('series')
@@ -25,7 +37,7 @@ export class SerieController {
   ): Promise<SerieResponseDto> {
     return this._serieService.findAll({
       query,
-      genres: [genre],
+      genres: genre ? [parseInt(genre.toString())] : [],
       language,
     });
   }
@@ -54,15 +66,20 @@ export class SerieController {
 
   @Post(':serieId')
   @ApiOperation({ summary: 'Add the serie to my list' })
-  @UseGuards(AuthGuard('jwt'))
-  addMovie(@Param('serieId') serieId: number, @Req() req): Promise<boolean> {
+  @ApiOkResponse({ type: MyListDto })
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
+  addMovie(@Param('serieId') serieId: number, @Req() req): Promise<MyListDto> {
     return this._serieService.add(serieId, req.user.email);
   }
 
   @Delete(':serieId')
   @ApiOperation({ summary: 'Removes the serie from my list' })
-  @UseGuards(AuthGuard('jwt'))
-  removeMovie(@Param('serieId') serieId: number, @Req() req): Promise<boolean> {
+  @ApiOkResponse({ type: MyListDto })
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
+  removeMovie(
+    @Param('serieId') serieId: number,
+    @Req() req,
+  ): Promise<MyListDto> {
     return this._serieService.remove(serieId, req.user.email);
   }
 

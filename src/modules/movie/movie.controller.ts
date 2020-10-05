@@ -7,6 +7,7 @@ import {
   UseGuards,
   Delete,
   Req,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,6 +20,8 @@ import { MovieResponseDto } from './dtos/movie-response.dto';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { MovieWatchDto } from './dtos/movie-watch.dto';
+import { MyListDto } from '../my-list/dtos/my-list.dto';
+import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
 @ApiTags('The movies')
 @Controller('movies')
@@ -34,11 +37,13 @@ export class MovieController {
     @Query('query') query?: string,
     @Query('genre') genre?: number,
     @Query('language') language?: string,
+    @Query('page') page?: number,
   ): Promise<MovieResponseDto> {
     return this._movieService.findAll({
       query,
-      genres: [genre],
+      genres: genre ? [parseInt(genre.toString())] : [],
       language,
+      page,
     });
   }
 
@@ -87,23 +92,20 @@ export class MovieController {
 
   @Post(':movieId')
   @ApiOperation({ summary: 'Add the movie to my list' })
-  @ApiOkResponse({
-    type: Boolean,
-    description: 'True when the movie was added or False when didnt',
-  })
-  @UseGuards(AuthGuard('jwt'))
-  addMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
+  @ApiOkResponse({ type: MyListDto })
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
+  addMovie(@Param('movieId') movieId: number, @Req() req): Promise<MyListDto> {
     return this._movieService.add(movieId, req.user.email);
   }
 
   @Delete(':movieId')
   @ApiOperation({ summary: 'Removes the movie from my list' })
-  @ApiOkResponse({
-    type: Boolean,
-    description: 'True when the movie was deleted or False when didnt',
-  })
-  @UseGuards(AuthGuard('jwt'))
-  removeMovie(@Param('movieId') movieId: number, @Req() req): Promise<boolean> {
+  @ApiOkResponse({ type: MyListDto })
+  @UseGuards(AuthGuard('jwt'), SuspendedGuard)
+  removeMovie(
+    @Param('movieId') movieId: number,
+    @Req() req,
+  ): Promise<MyListDto> {
     return this._movieService.remove(movieId, req.user.email);
   }
 
