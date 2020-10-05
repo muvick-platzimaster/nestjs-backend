@@ -52,7 +52,7 @@ export class MovieService {
     return this.call(`/movie/${filter.id}/recommendations`, filter);
   }
 
-  async findAll(filter: MovieFilterDto) {
+  async findAll(filter: MovieFilterDto): Promise<MovieResponseDto> {
     const theMovies = await this._movieModel
       .find({
         ...queryBuildILike('title', filter.query),
