@@ -24,7 +24,9 @@ describe('MovieController', () => {
   describe('findAll', () => {
     it('should return an array of movies', async () => {
       const result = new MovieResponseDto();
-      jest.spyOn(movieService, 'findAll').mockImplementation(() => result);
+      jest
+        .spyOn(movieService, 'findAll')
+        .mockImplementation(async () => result);
 
       expect(await movieController.getAll()).toBe(result);
     });
