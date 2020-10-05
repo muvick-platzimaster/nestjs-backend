@@ -3,4 +3,5 @@ export interface MovieFilterDto {
   query?: string;
   genres?: number[];
   language?: string;
+  page?: number;
 }

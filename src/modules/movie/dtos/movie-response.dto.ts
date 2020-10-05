@@ -4,5 +4,5 @@ import { MovieDto } from './movie.dto';
 
 export class MovieResponseDto extends PageResultDto {
   @ApiProperty({ type: MovieDto, isArray: true })
-  readonly results: MovieDto[];
+  results: MovieDto[];
 }

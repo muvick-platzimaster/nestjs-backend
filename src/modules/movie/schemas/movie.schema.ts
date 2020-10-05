@@ -6,7 +6,7 @@ import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
 export class Movie extends Document {
   @Prop({ unique: true })
   id: number;
-  @Prop({ unique: true })
+  @Prop()
   backdrop_path: string;
   @Prop({ unique: true })
   poster_path: string;
@@ -15,6 +15,8 @@ export class Movie extends Document {
   @Prop()
   original_title: string;
   @Prop()
+  title: string;
+  @Prop()
   overview: string;
   @Prop()
   popularity: number;
@@ -22,6 +24,8 @@ export class Movie extends Document {
   release_date: string;
   @Prop()
   runtime: number;
+  @Prop()
+  vote_average: number;
   @Prop()
   readonly genres: GenreDto[];
 }

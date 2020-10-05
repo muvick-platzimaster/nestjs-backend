@@ -21,6 +21,9 @@ export class SerieDetailDto {
   readonly original_name: string;
   @Expose()
   @ApiProperty()
+  readonly name: string;
+  @Expose()
+  @ApiProperty()
   readonly overview: string;
   @Expose()
   @ApiProperty()
@@ -31,6 +34,9 @@ export class SerieDetailDto {
   @Expose()
   @ApiProperty()
   readonly vote_count: number;
+  @Expose()
+  @ApiProperty()
+  readonly vote_average: number;
   @Expose()
   @ApiProperty({ type: GenreDto, isArray: true })
   readonly genres: GenreDto[];

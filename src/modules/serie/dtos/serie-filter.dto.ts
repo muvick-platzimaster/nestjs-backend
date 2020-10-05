@@ -3,4 +3,5 @@ export interface SerieFilterDto {
   query?: string;
   genres?: number[];
   language?: string;
+  page?: number;
 }
