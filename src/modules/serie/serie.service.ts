@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { SerieDto } from './dtos/serie.dto';
 import { plainToClass } from 'class-transformer';
 import { SerieFilterDto } from './dtos/serie-filter.dto';
@@ -9,9 +9,9 @@ import axios from 'axios';
 import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MyList } from '../my-list/schemas/my-list.schema';
 import { Serie } from './schemas/serie.schema';
 import { MyListService } from '../my-list/my-list.service';
+import { SerieWatchDto } from './dtos/serie-watch.dto';
 import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
 import { SerieResponseDto } from './dtos/serie-response.dto';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
@@ -41,7 +41,6 @@ export class SerieService {
     const response = new SerieResponseDto();
     response.results = theMovies.map(m => plainToClass(SerieDto, m));
     return response;
-    //return this.call('tv/popular', filter);
   }
 
   async findAll(filter: SerieFilterDto) {
@@ -55,7 +54,6 @@ export class SerieService {
     const response = new SerieResponseDto();
     response.results = theSeries.map(m => plainToClass(SerieDto, m));
     return response;
-    // return this.call('discover/tv', filter);
   }
 
   async findById(filter: SerieFilterDto) {
@@ -171,6 +169,25 @@ export class SerieService {
     const theSerieCreated = new this._serieModel(toSave);
     await theSerieCreated.save();
     return theSerieCreated;
+  }
+
+
+  async watch(serie: number) {
+    const url = `${this.TMDB_URL}/tv/${serie}/videos`;
+
+    const request = await axios.get(url, {
+      headers: this._utilService.insertRequestHeaders(),
+    });
+
+    const data = request.data.results[0];
+    if (data.site === 'YouTube') {
+      return plainToClass(SerieWatchDto, {
+        id: serie,
+        url: `https://www.youtube.com/embed/${data.key}`,
+      });
+    }
+
+    throw new InternalServerErrorException('video_not_found');
   }
 
   async populate() {
