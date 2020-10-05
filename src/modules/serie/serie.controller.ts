@@ -11,21 +11,19 @@ import {
 } from '@nestjs/common';
 import { SerieService } from './serie.service';
 import { SerieResponseDto } from './dtos/serie-response.dto';
-import {
-  ApiQuery,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { SerieWatchDto } from './dtos/serie-watch.dto';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
 import { SuspendedGuard } from '../auth/guards/suspended.guard';
 
 @ApiTags('The series')
 @Controller('series')
 export class SerieController {
-  constructor(private readonly _serieService: SerieService) {}
+  constructor(private readonly _serieService: SerieService) {
+  }
+
   @Get()
   @ApiOperation({ summary: 'Retrieves the series' })
   @ApiQuery({ name: 'query', required: false })
@@ -83,5 +81,12 @@ export class SerieController {
     @Req() req,
   ): Promise<MyListDto> {
     return this._serieService.remove(serieId, req.user.email);
+  }
+
+  @Get(':serieId/watch')
+  @ApiOkResponse({ type: SerieWatchDto })
+  @UseGuards(AuthGuard('jwt'))
+  watch(@Param('serieId') movieId: number): Promise<SerieWatchDto> {
+    return this._serieService.watch(movieId);
   }
 }
