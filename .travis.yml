@@ -6,6 +6,10 @@ node_js:
 git:
   depth: 3
 
+notifications:
+  email:
+    - $MAIN_EMAIL
+
 branches:
   only:
     - main
