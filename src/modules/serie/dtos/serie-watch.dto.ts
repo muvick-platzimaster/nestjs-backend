@@ -1,9 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { WatchDto } from '../../dtos/watch.dto';
 
-export class SerieWatchDto {
-  @ApiProperty()
-  id: number;
-  @ApiProperty()
-  url: string;
-
+export class SerieWatchDto extends WatchDto {
 }
