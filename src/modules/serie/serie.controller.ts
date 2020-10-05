@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Query,
-  Param,
-  Req,
-  UseGuards,
-  Post,
-  Delete,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { SerieService } from './serie.service';
 import { SerieResponseDto } from './dtos/serie-response.dto';
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -30,6 +20,7 @@ export class SerieController {
   @ApiQuery({ name: 'genre', required: false })
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: SerieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getAll(
     @Query('query') query?: string,
     @Query('genre') genre?: number,
@@ -46,6 +37,7 @@ export class SerieController {
   @ApiOperation({ summary: 'Retrieves the serie detail' })
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: SerieDetailDto })
+  @UseGuards(AuthGuard('jwt'))
   getById(@Param('id') id: number, @Query('language') language?: string) {
     return this._serieService.findById({ id, language });
   }
@@ -53,6 +45,7 @@ export class SerieController {
   @Get('popular')
   @ApiOperation({ summary: 'Retrieves the popular series' })
   @ApiOkResponse({ type: SerieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getPopular(@Query('language') language?: string): Promise<SerieResponseDto> {
     return this._serieService.findPopular({ language });
   }
@@ -60,6 +53,7 @@ export class SerieController {
   @Get('top-rated')
   @ApiOperation({ summary: 'Retrieves the top rated series' })
   @ApiOkResponse({ type: SerieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getTopRated(@Query('language') language?: string): Promise<SerieResponseDto> {
     return this._serieService.findTopRated({ language });
   }

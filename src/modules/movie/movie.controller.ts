@@ -33,6 +33,7 @@ export class MovieController {
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
   @ApiOperation({ summary: 'Retrieves the movies' })
+  @UseGuards(AuthGuard('jwt'))
   getAll(
     @Query('query') query?: string,
     @Query('genre') genre?: number,
@@ -51,6 +52,7 @@ export class MovieController {
   @ApiOperation({ summary: 'Retrieves the movie detail' })
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieDetailDto })
+  @UseGuards(AuthGuard('jwt'))
   getById(@Param('id') id: number, @Query('language') language?: string) {
     return this._movieService.findById({ id, language });
   }
@@ -58,6 +60,7 @@ export class MovieController {
   @Get(':id/recommendations')
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getRecommendations(
     @Param('id') id: number,
     @Query('language') language?: string,
@@ -70,6 +73,7 @@ export class MovieController {
   @ApiOperation({ summary: 'Retrieves the popular movies' })
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getPopular(@Query('language') language?: string): Promise<MovieResponseDto> {
     return this._movieService.findPopular({ language });
   }
@@ -78,6 +82,7 @@ export class MovieController {
   @ApiOperation({ summary: 'Retrieves the top rated movies' })
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getTopRated(@Query('language') language?: string): Promise<MovieResponseDto> {
     return this._movieService.findTopRated({ language });
   }
@@ -86,6 +91,7 @@ export class MovieController {
   @ApiOperation({ summary: 'Retrieves the upcoming movies' })
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
+  @UseGuards(AuthGuard('jwt'))
   getUpcoming(@Query('language') language?: string): Promise<MovieResponseDto> {
     return this._movieService.findUpcoming({ language });
   }
