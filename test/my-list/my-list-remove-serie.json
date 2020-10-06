@@ -1,0 +1,136 @@
+{
+  "email": "jonatan.lazo@gmail.com",
+  "movies": [
+    {
+      "id": 497582,
+      "backdrop_path": "/kMe4TKMDNXTKptQPAdOF0oZHq3V.jpg",
+      "poster_path": "/riYInlsq2kf1AWoGm80JQW5dLKp.jpg",
+      "original_language": "en",
+      "title": "Enola Holmes",
+      "original_title": "Enola Holmes",
+      "overview": "While searching for her missing mother, intrepid teen Enola Holmes uses her sleuthing skills to outsmart big brother Sherlock and help a runaway lord.",
+      "popularity": 1969.622,
+      "release_date": "2020-09-23",
+      "runtime": 123,
+      "vote_average": 7.7,
+      "genres": [
+        {
+          "id": 12,
+          "name": "Adventure"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ]
+    },
+    {
+      "id": 694919,
+      "backdrop_path": "/pq0JSpwyT2URytdFG0euztQPAyR.jpg",
+      "poster_path": "/6CoRTJTmijhBLJTUNoVSUNxZMEI.jpg",
+      "original_language": "en",
+      "title": "Money Plane",
+      "original_title": "Money Plane",
+      "overview": "A professional thief with $40 million in debt and his family's life on the line must commit one final heist - rob a futuristic airborne casino filled with the world's most dangerous criminals.",
+      "popularity": 1550.695,
+      "release_date": "2020-09-29",
+      "runtime": 82,
+      "vote_average": 5.8,
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        }
+      ]
+    },
+    {
+      "id": 539885,
+      "backdrop_path": "/54yOImQgj8i85u9hxxnaIQBRUuo.jpg",
+      "poster_path": "/qzA87Wf4jo1h8JMk9GilyIYvwsA.jpg",
+      "original_language": "en",
+      "title": "Ava",
+      "original_title": "Ava",
+      "overview": "A black ops assassin is forced to fight for her own survival after a job goes dangerously wrong.",
+      "popularity": 795.526,
+      "release_date": "2020-07-02",
+      "runtime": 96,
+      "vote_average": 6,
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ]
+    }
+  ],
+  "series": [
+    {
+      "id": 76479,
+      "backdrop_path": "/mGVrXeIjyecj6TKmwPVpHlscEmw.jpg",
+      "poster_path": "/mY7SeH4HFFxW1hiI6cWuwCRKptN.jpg",
+      "original_language": "en",
+      "original_name": "The Boys",
+      "name": "The Boys",
+      "overview": "A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
+      "popularity": 2070.591,
+      "first_air_date": "2019-07-25",
+      "vote_average": 8.4,
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        }
+      ]
+    },
+    {
+      "id": 48866,
+      "backdrop_path": "/hTExot1sfn7dHZjGrk0Aiwpntxt.jpg",
+      "poster_path": "/wcaDIAG1QdXQLRaj4vC1EFdBT2.jpg",
+      "original_language": "en",
+      "original_name": "The 100",
+      "name": "The 100",
+      "overview": "100 years in the future, when the Earth has been abandoned due to radioactivity, the last surviving humans live on an ark orbiting the planet — but the ark won't last forever. So the repressive regime picks 100 expendable juvenile delinquents to send down to Earth to see if the planet is still habitable.",
+      "popularity": 569.12,
+      "first_air_date": "2014-03-19",
+      "vote_average": 7.7,
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        }
+      ]
+    }
+  ]
+}

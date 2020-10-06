@@ -68,7 +68,6 @@ export class SerieService {
         headers: this._utilService.insertRequestHeaders(),
       },
     );
-    console.log('Detail TV', result.data);
     return plainToClass(SerieDetailDto, result.data);
   }
 
