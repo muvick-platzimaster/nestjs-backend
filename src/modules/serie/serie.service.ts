@@ -37,8 +37,7 @@ export class SerieService {
     return this.call('tv/top_rated', filter);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async findPopular(filter: SerieFilterDto) {
+  async findPopular() {
     const theMovies = await this._serieModel
       .find()
       .sort({ popularity: -1 })
