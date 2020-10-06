@@ -39,6 +39,12 @@ export class MovieController {
     @Query('language') language?: string,
     @Query('page') page?: number,
   ): Promise<MovieResponseDto> {
+    console.log('Lo que recibo es => ', {
+      query,
+      genres: genre ? [parseInt(genre.toString())] : [],
+      language,
+      page,
+    });
     return this._movieService.findAll({
       query,
       genres: genre ? [parseInt(genre.toString())] : [],
@@ -110,9 +116,9 @@ export class MovieController {
   }
 
   @Get(':movieId/watch')
-  @ApiOkResponse({type: MovieWatchDto})
+  @ApiOkResponse({ type: MovieWatchDto })
   @UseGuards(AuthGuard('jwt'))
-  watch(@Param('movieId') movieId: number): Promise<MovieWatchDto>{
-    return this._movieService.watch(movieId)
+  watch(@Param('movieId') movieId: number): Promise<MovieWatchDto> {
+    return this._movieService.watch(movieId);
   }
 }

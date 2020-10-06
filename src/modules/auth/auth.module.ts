@@ -6,9 +6,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from 'src/config/config.module';
-import { ConfigService } from 'src/config/config.service';
-import { ConfigEnum } from 'src/config/config.keys';
+import { ConfigModule } from '../../config/config.module';
+import { ConfigService } from '../../config/config.service';
+import { ConfigEnum } from '../../config/config.keys';
 import { UtilModule } from '../../util/util.module';
 
 @Module({
