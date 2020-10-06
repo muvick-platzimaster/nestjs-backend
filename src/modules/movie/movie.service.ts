@@ -12,7 +12,7 @@ import { MovieDto } from './dtos/movie.dto';
 import { UtilService } from '../../util/util.service';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, DocumentQuery } from 'mongoose';
+import { Model } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { MyListService } from '../my-list/my-list.service';
 import { MovieWatchDto } from './dtos/movie-watch.dto';
@@ -41,7 +41,8 @@ export class MovieService {
     return this.call('movie/top_rated', filter);
   }
 
-  async findPopular(filter?: MovieFilterDto) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async findPopular(filter: MovieFilterDto) {
     const theMovies = await this._movieModel
       .find()
       .sort({ popularity: -1 })

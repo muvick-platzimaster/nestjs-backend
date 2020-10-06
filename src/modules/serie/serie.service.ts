@@ -19,6 +19,7 @@ import { SerieWatchDto } from './dtos/serie-watch.dto';
 import { queryBuildILike, queryBuildIn } from '../../util/query.build.util';
 import { SerieResponseDto } from './dtos/serie-response.dto';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
+
 @Injectable()
 export class SerieService {
   private TMDB_URL: string;
@@ -36,6 +37,7 @@ export class SerieService {
     return this.call('tv/top_rated', filter);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async findPopular(filter: SerieFilterDto) {
     const theMovies = await this._serieModel
       .find()

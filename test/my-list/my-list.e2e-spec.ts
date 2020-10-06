@@ -2,13 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const myList = require('./my-list.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const myNewMovieList = require('./my-list-remove-movie.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const myNewSerieList = require('./my-list-remove-serie.json');
 
 describe('MyListController (e2e)', () => {
   let app: INestApplication;
-  let movieMockService = {
+  const movieMockService = {
     findMyList: () => JSON.stringify(myList),
     findWithMovieRemove: () => JSON.stringify(myNewMovieList),
     findWithSerieRemove: () => JSON.stringify(myNewSerieList),
