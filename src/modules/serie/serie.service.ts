@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { SerieDto } from './dtos/serie.dto';
 import { plainToClass } from 'class-transformer';
 import { SerieFilterDto } from './dtos/serie-filter.dto';
@@ -15,6 +19,7 @@ import { SerieWatchDto } from './dtos/serie-watch.dto';
 import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
 import { SerieResponseDto } from './dtos/serie-response.dto';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
+
 @Injectable()
 export class SerieService {
   private TMDB_URL: string;
@@ -32,7 +37,7 @@ export class SerieService {
     return this.call('tv/top_rated', filter);
   }
 
-  async findPopular(filter: SerieFilterDto) {
+  async findPopular() {
     const theMovies = await this._serieModel
       .find()
       .sort({ popularity: -1 })
@@ -170,7 +175,6 @@ export class SerieService {
     await theSerieCreated.save();
     return theSerieCreated;
   }
-
 
   async watch(serie: number) {
     const url = `${this.TMDB_URL}/tv/${serie}/videos`;
