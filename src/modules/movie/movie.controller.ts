@@ -74,8 +74,9 @@ export class MovieController {
   @ApiQuery({ name: 'language', required: false })
   @ApiOkResponse({ type: MovieResponseDto })
   @UseGuards(AuthGuard('jwt'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getPopular(@Query('language') language?: string): Promise<MovieResponseDto> {
-    return this._movieService.findPopular({ language });
+    return this._movieService.findPopular();
   }
 
   @Get('top-rated')
