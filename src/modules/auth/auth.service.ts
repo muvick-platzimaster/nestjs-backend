@@ -155,61 +155,61 @@ export class AuthService {
     throw new InternalServerErrorException();
   }
 
-  // @Cron(CronExpression.EVERY_MINUTE)
-  // async sendVerificationEmail() {
-  //   sgMail.setApiKey(this._configService.get(ConfigEnum.SENDGRID_API_KEY));
-  //   const unsentVerificationEmails = await this.userModel.find({
-  //     emailSent: false,
-  //   });
-  //   const message = {
-  //     to: '',
-  //     from: 'me@axelespinosadev.com',
-  //     subject: '',
-  //     html: '',
-  //   };
+  @Cron(CronExpression.EVERY_MINUTE)
+  async sendVerificationEmail() {
+    sgMail.setApiKey(this._configService.get(ConfigEnum.SENDGRID_API_KEY));
+    const unsentVerificationEmails = await this.userModel.find({
+      emailSent: false,
+    });
+    const message = {
+      to: '',
+      from: 'me@axelespinosadev.com',
+      subject: '',
+      html: '',
+    };
 
-  //   for (const user of unsentVerificationEmails) {
-  //     message.to = user.email;
+    for (const user of unsentVerificationEmails) {
+      message.to = user.email;
 
-  //     if (user.language === 'es') {
-  //       message.html = generateVerificationCodeTemplate(user.name, user.pin);
-  //       message.subject = 'Muvick Código de verificación';
-  //     } else if (user.language === 'en') {
-  //       message.html = generateVerificationCodeTemplateEnglish(
-  //         user.name,
-  //         user.pin,
-  //       );
-  //       message.subject = 'Muvick Verification Code';
-  //     }
+      if (user.language === 'es') {
+        message.html = generateVerificationCodeTemplate(user.name, user.pin);
+        message.subject = 'Muvick Código de verificación';
+      } else if (user.language === 'en') {
+        message.html = generateVerificationCodeTemplateEnglish(
+          user.name,
+          user.pin,
+        );
+        message.subject = 'Muvick Verification Code';
+      }
 
-  //     try {
-  //       const messageSent = await sgMail.send(message);
-  //       if (messageSent[0].statusCode === 202) {
-  //         user.emailSent = true;
-  //         user.expirationDate = moment()
-  //           .add(3, 'days')
-  //           .format();
-  //         user.save();
-  //       }
-  //     } catch (err) {
-  //       console.error(`[Error Sending Verification Code] ${err.mediaDevices}`);
-  //       console.error(err.stack);
-  //     }
-  //   }
-  // }
+      try {
+        const messageSent = await sgMail.send(message);
+        if (messageSent[0].statusCode === 202) {
+          user.emailSent = true;
+          user.expirationDate = moment()
+            .add(3, 'days')
+            .format();
+          user.save();
+        }
+      } catch (err) {
+        console.error(`[Error Sending Verification Code] ${err.mediaDevices}`);
+        console.error(err.stack);
+      }
+    }
+  }
 
-  // @Cron(CronExpression.EVERY_MINUTE)
-  // async suspendService() {
-  //   const users = await this.userModel.find({
-  //     confirmed: false,
-  //     emailSent: true,
-  //   });
-  //   for (const user of users) {
-  //     const expired = moment(user.expirationDate).isBefore(moment().format());
-  //     if (expired) {
-  //       user.suspended = true;
-  //       await user.save();
-  //     }
-  //   }
-  // }
+  @Cron(CronExpression.EVERY_MINUTE)
+  async suspendService() {
+    const users = await this.userModel.find({
+      confirmed: false,
+      emailSent: true,
+    });
+    for (const user of users) {
+      const expired = moment(user.expirationDate).isBefore(moment().format());
+      if (expired) {
+        user.suspended = true;
+        await user.save();
+      }
+    }
+  }
 }
