@@ -39,12 +39,6 @@ export class MovieController {
     @Query('language') language?: string,
     @Query('page') page?: number,
   ): Promise<MovieResponseDto> {
-    console.log('Lo que recibo es => ', {
-      query,
-      genres: genre ? [parseInt(genre.toString())] : [],
-      language,
-      page,
-    });
     return this._movieService.findAll({
       query,
       genres: genre ? [parseInt(genre.toString())] : [],
