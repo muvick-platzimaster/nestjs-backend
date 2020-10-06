@@ -1,5 +1,5 @@
-import { MovieDetailDto } from 'src/modules/movie/dtos/movie-detail.dto';
-import { SerieDetailDto } from 'src/modules/serie/dtos/serie-detail.dto';
+import { MovieDetailDto } from '../../movie/dtos/movie-detail.dto';
+import { SerieDetailDto } from '../../serie/dtos/serie-detail.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class MyListDto {

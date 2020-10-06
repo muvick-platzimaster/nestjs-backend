@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "id": 337401,
+      "popularity": 1000.723,
+      "backdrop_path": "/zzWGRw277MNoCs3zhyG3YmYQsXv.jpg",
+      "poster_path": "/aKx1ARwG55zZ0GpRvU2WrGrCG9o.jpg",
+      "original_language": "en",
+      "original_title": "Mulan",
+      "title": "Mulan",
+      "vote_average": 7.4,
+      "overview": "When the Emperor of China issues a decree that one man per family must serve in the Imperial Chinese Army to defend the country from Huns, Hua Mulan, the eldest daughter of an honored warrior, steps in to take the place of her ailing father. She is spirited, determined and quick on her feet. Disguised as a man by the name of Hua Jun, she is tested every step of the way and must harness her innermost strength and embrace her true potential.",
+      "release_date": "2020-09-04"
+    },
+    {
+      "id": 664345,
+      "popularity": 20.299,
+      "backdrop_path": "/tXswWJAnuwTcoqAguOLVvfAMEAh.jpg",
+      "poster_path": "/p6CppgOnIXtpG7TI5SuNv5QQHbo.jpg",
+      "original_language": "zh",
+      "original_title": "木兰：横空出世",
+      "title": "Kung Fu Mulan",
+      "vote_average": 0,
+      "overview": "Mulan grew up in a martial arts family, has a dream to become a female warrior in the Kingdom. By forced to join the army in her father’s stead, she finds a way to express herself. However, during a mission that she was supposed to assassinate the Crown prince of a hostile kingdom, she never knows that this decision changed her life entirely. They fell in love. From then on, she has a new goal, not to fight for her achievement but to bring peace for the people of both countries. In the end, she triumphed over the villain and also understood the true meaning of being a warrior.",
+      "release_date": "2020-10-01"
+    }
+  ]
+}

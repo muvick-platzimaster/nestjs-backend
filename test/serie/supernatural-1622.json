@@ -1,0 +1,27 @@
+{
+  "id": 1622,
+  "backdrop_path": "/nVRyd8hlg0ZLxBn9RaI7mUMQLnz.jpg",
+  "poster_path": "/KoYWXbnYuS3b0GyQPkbuexlVK9.jpg",
+  "original_language": "en",
+  "original_name": "Supernatural",
+  "name": "Supernatural",
+  "overview": "When they were boys, Sam and Dean Winchester lost their mother to a mysterious and demonic supernatural force. Subsequently, their father raised them to be soldiers. He taught them about the paranormal evil that lives in the dark corners and on the back roads of America ... and he taught them how to kill it. Now, the Winchester brothers crisscross the country in their '67 Chevy Impala, battling every kind of supernatural threat they encounter along the way. ",
+  "popularity": 347.617,
+  "first_air_date": "2005-09-13",
+  "vote_count": 3918,
+  "vote_average": 8,
+  "genres": [
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 9648,
+      "name": "Mystery"
+    },
+    {
+      "id": 10765,
+      "name": "Sci-Fi & Fantasy"
+    }
+  ]
+}

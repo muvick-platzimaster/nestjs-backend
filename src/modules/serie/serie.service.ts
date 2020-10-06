@@ -6,9 +6,9 @@ import {
 import { SerieDto } from './dtos/serie.dto';
 import { plainToClass } from 'class-transformer';
 import { SerieFilterDto } from './dtos/serie-filter.dto';
-import { UtilService } from 'src/util/util.service';
-import { ConfigService } from 'src/config/config.service';
-import { ConfigEnum } from 'src/config/config.keys';
+import { UtilService } from '../../util/util.service';
+import { ConfigService } from '../../config/config.service';
+import { ConfigEnum } from '../../config/config.keys';
 import axios from 'axios';
 import { SerieDetailDto } from './dtos/serie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -16,7 +16,7 @@ import { Model } from 'mongoose';
 import { Serie } from './schemas/serie.schema';
 import { MyListService } from '../my-list/my-list.service';
 import { SerieWatchDto } from './dtos/serie-watch.dto';
-import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
+import { queryBuildILike, queryBuildIn } from '../../util/query.build.util';
 import { SerieResponseDto } from './dtos/serie-response.dto';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
 
@@ -69,7 +69,6 @@ export class SerieService {
         headers: this._utilService.insertRequestHeaders(),
       },
     );
-    console.log('Detail TV', result.data);
     return plainToClass(SerieDetailDto, result.data);
   }
 

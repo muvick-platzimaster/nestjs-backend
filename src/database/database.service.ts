@@ -1,7 +1,7 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '../config/config.module';
-import { ConfigService } from 'src/config/config.service';
-import { ConfigEnum } from 'src/config/config.keys';
+import { ConfigService } from '../config/config.service';
+import { ConfigEnum } from '../config/config.keys';
 
 export const databaseProviders = [
   MongooseModule.forRootAsync({

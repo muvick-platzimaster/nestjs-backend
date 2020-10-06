@@ -64,7 +64,6 @@ export class AuthController {
     },
   })
   async signIn(@Body() signin: SigninDto): Promise<SigninResponseDto> {
-    console.log('El usuario a autenticar es =>>>>>>>', signin);
     return this._authService.signIn(signin);
   }
 

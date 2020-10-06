@@ -1,6 +1,6 @@
 import { Expose, Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { GenreDto } from 'src/modules/genre/dtos/genre.dto';
+import { GenreDto } from '../../genre/dtos/genre.dto';
 
 @Exclude()
 export class SerieDetailDto {
