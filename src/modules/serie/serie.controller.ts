@@ -59,8 +59,9 @@ export class SerieController {
   @ApiOperation({ summary: 'Retrieves the popular series' })
   @ApiOkResponse({ type: SerieResponseDto })
   @UseGuards(AuthGuard('jwt'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getPopular(@Query('language') language?: string): Promise<SerieResponseDto> {
-    return this._serieService.findPopular({ language });
+    return this._serieService.findPopular();
   }
 
   @Get('top-rated')
