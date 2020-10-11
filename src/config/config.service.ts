@@ -21,7 +21,7 @@ export class ConfigService {
         JWT_SECRET: process.env.JWT_SECRET,
         TMDB_URI: process.env.TMDB_URI,
         TMDB_API_KEY_V4_AUTH: process.env.TMDB_API_KEY_V4_AUTH,
-        SENDGRID_API_KEY: process.env.SENDGRID_API_KEY
+        SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
       };
     }
   }

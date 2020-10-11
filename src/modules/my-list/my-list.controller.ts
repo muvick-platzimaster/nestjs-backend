@@ -1,16 +1,7 @@
-import {
-  Controller,
-  Post,
-  Delete,
-  Body,
-  Param,
-  Req,
-  UseGuards,
-  Get,
-} from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { MyListService } from './my-list.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MyListDto } from './dtos/my-list.dto';
 
 @ApiTags('My list of movies and series')

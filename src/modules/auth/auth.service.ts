@@ -61,7 +61,6 @@ export class AuthService {
     const user = await this.userModel.findOne({ email: signin.email });
     if (!user) throw new NotFoundException('invalid_credentials');
     const isMatch = await compare(password, user.password);
-    console.log('Debo de autenticar?', isMatch);
     if (!isMatch) throw new UnauthorizedException('invalid_credentials');
     const payload: IJwtPayload = {
       name: user.name,

@@ -12,7 +12,6 @@ import {
   ApiConflictResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -65,7 +64,6 @@ export class AuthController {
     },
   })
   async signIn(@Body() signin: SigninDto): Promise<SigninResponseDto> {
-    console.log('El usuario a autenticar es =>>>>>>>', signin);
     return this._authService.signIn(signin);
   }
 

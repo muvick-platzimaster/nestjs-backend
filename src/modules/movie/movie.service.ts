@@ -1,6 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { ConfigService } from 'src/config/config.service';
-import { ConfigEnum } from 'src/config/config.keys';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { ConfigService } from '../../config/config.service';
+import { ConfigEnum } from '../../config/config.keys';
 import axios from 'axios';
 import { MovieFilterDto } from './dtos/movie-filter.dto';
 import { plainToClass } from 'class-transformer';
@@ -8,12 +12,12 @@ import { MovieDto } from './dtos/movie.dto';
 import { UtilService } from '../../util/util.service';
 import { MovieDetailDto } from './dtos/movie-detail.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, DocumentQuery } from 'mongoose';
+import { Model } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { MyListService } from '../my-list/my-list.service';
 import { MovieWatchDto } from './dtos/movie-watch.dto';
 import { MovieResponseDto } from './dtos/movie-response.dto';
-import { queryBuildILike, queryBuildIn } from 'src/util/query.build.util';
+import { queryBuildILike, queryBuildIn } from '../../util/query.build.util';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
 
 @Injectable()
@@ -37,7 +41,7 @@ export class MovieService {
     return this.call('movie/top_rated', filter);
   }
 
-  async findPopular(filter?: MovieFilterDto) {
+  async findPopular() {
     const theMovies = await this._movieModel
       .find()
       .sort({ popularity: -1 })

@@ -1,0 +1,31 @@
+{
+  "id": 337401,
+  "backdrop_path": "/zzWGRw277MNoCs3zhyG3YmYQsXv.jpg",
+  "poster_path": "/aKx1ARwG55zZ0GpRvU2WrGrCG9o.jpg",
+  "original_language": "en",
+  "title": "Mulan",
+  "original_title": "Mulan",
+  "overview": "When the Emperor of China issues a decree that one man per family must serve in the Imperial Chinese Army to defend the country from Huns, Hua Mulan, the eldest daughter of an honored warrior, steps in to take the place of her ailing father. She is spirited, determined and quick on her feet. Disguised as a man by the name of Hua Jun, she is tested every step of the way and must harness her innermost strength and embrace her true potential.",
+  "popularity": 1000.723,
+  "release_date": "2020-09-04",
+  "runtime": 115,
+  "vote_average": 7.4,
+  "genres": [
+    {
+      "id": 28,
+      "name": "Action"
+    },
+    {
+      "id": 12,
+      "name": "Adventure"
+    },
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 14,
+      "name": "Fantasy"
+    }
+  ]
+}
