@@ -12,7 +12,6 @@ import { Serie } from '../serie/schemas/serie.schema';
 import { SerieModelMock } from './mocks/SerieModelMock';
 import { MovieModelMock } from './mocks/movie-model-mock.service';
 import { HistoryModelMock } from './mocks/history-model-mock.service';
-import exp = require('constants');
 
 const payloadMockNotExist = {
   email: 'test@test.com',
