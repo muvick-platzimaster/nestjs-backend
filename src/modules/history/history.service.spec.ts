@@ -1,12 +1,48 @@
 import { HistoryService } from './history.service';
 import { Test } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { HistoryModelMock } from './mocks/HistoryModelMock';
+import sinon = require('sinon');
+import { Model } from 'mongoose';
+
+// Documents
+import { History} from './schema/history.schema';
+import { Movie } from '../movie/schemas/movie.schema';
+import { Serie } from '../serie/schemas/serie.schema';
+// Mocks
 import { SerieModelMock } from './mocks/SerieModelMock';
-import { MovieModelMock } from './mocks/MovieModelMock';
+import { MovieModelMock } from './mocks/movie-model-mock.service';
+import { HistoryModelMock } from './mocks/history-model-mock.service';
+import exp = require('constants');
+
+const payloadMockNotExist = {
+  email: 'test@test.com',
+  contentId: '5f788e242f312468317b5485',
+  contentType: 'movie',
+};
+
+const movieMock = {
+  '_id': '5f788e242f312468317b5485',
+  'genres': [{ 'id': 28, 'name': 'Action' }, { 'id': 53, 'name': 'Thriller' }],
+  'id': 724989,
+  'backdrop_path': '/86L8wqGMDbwURPni2t7FQ0nDjsH.jpg',
+  'poster_path': '/ugZW8ocsrfgI95pnQ7wrmKDxIe.jpg',
+  'original_language': 'en',
+  'title': 'Hard Kill',
+  'original_title': 'Hard Kill',
+  'overview': 'The work of billionaire tech CEO Donovan Chalmers is so valuable that he hires mercenaries to protect it, and a terrorist group kidnaps his daughter just to get it.',
+  'popularity': 882.969,
+  'release_date': '2020-08-25',
+  'runtime': 98,
+  'vote_average': 5,
+  '__v': 0,
+};
+
 
 describe('HistoryService', () => {
   let service: HistoryService;
+  let historyModel: Model<History>
+  let movieModel: Model<Movie>
+  let serieModel: Model<Serie>
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -14,7 +50,7 @@ describe('HistoryService', () => {
         HistoryService,
         {
           provide: getModelToken('history'),
-          useValue: HistoryModelMock,
+          useValue: HistoryModelMock
         },
         {
           provide: getModelToken('serie'),
@@ -28,19 +64,23 @@ describe('HistoryService', () => {
     }).compile();
 
     service = module.get<HistoryService>(HistoryService);
+    historyModel = module.get<Model<History>>(getModelToken('history'))
+    movieModel = module.get<Model<Movie>>(getModelToken('movie'))
+    serieModel = module.get<Model<Serie>>(getModelToken('serie'))
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should add a record', async function() {
-    const payload = {
-      email: 'test@test.com',
-      contentId: '5f788e242f312468317b5485',
-      contentType: 'movies',
-    };
+  it('should add a movie to the history', async function() {
+    const historyFindOne = sinon.stub(historyModel, 'findOne').withArgs({email: payloadMockNotExist.email}).resolves(null)
+    const movieFindOne = sinon.stub(movieModel, 'findOne').withArgs({_id: payloadMockNotExist.contentId}).resolves(movieMock)
 
-    await service.add(payload);
+    const addMovie = await service.add(payloadMockNotExist);
+    expect(historyFindOne.calledWith({email: payloadMockNotExist.email})).toBe(true)
+    expect(movieFindOne.calledWith({_id: payloadMockNotExist.contentId})).toBe(true)
+    expect(movieFindOne.calledOnce).toBe(true)
+    expect(addMovie).toBe(true)
   });
 });
