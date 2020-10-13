@@ -22,6 +22,8 @@ export class ConfigService {
         TMDB_URI: process.env.TMDB_URI,
         TMDB_API_KEY_V4_AUTH: process.env.TMDB_API_KEY_V4_AUTH,
         SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+        API_IBM_TRANSLATOR: process.env.API_IBM_TRANSLATOR,
+        API_URL_IBM_TRANSLATOR: process.env.API_URL_IBM_TRANSLATOR
       };
     }
   }
