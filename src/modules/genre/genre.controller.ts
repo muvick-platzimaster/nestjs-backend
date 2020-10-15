@@ -28,8 +28,8 @@ export class GenreController {
     },
   })
   @UseGuards(AuthGuard('jwt'))
-  async getFromMovie(): Promise<GenreResponseDto> {
-    return this._genreService.findFromMovies();
+  async getFromMovie(language?: string): Promise<GenreResponseDto> {
+    return this._genreService.findFromMovies(language);
   }
 
   @Get('/series')

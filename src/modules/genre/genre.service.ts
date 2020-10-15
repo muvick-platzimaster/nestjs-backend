@@ -17,7 +17,7 @@ export class GenreService {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
-  async findFromMovies() {
+  async findFromMovies(language ?: string) {
     const request = await axios.get(`${this.TMDB_URL}/genre/movie/list`, {
       headers: this._utilsService.insertRequestHeaders(),
     });
