@@ -11,7 +11,7 @@ export class HistoryAddDto {
   @IsMongoId()
   contentId: string;
 
-  @ApiProperty({ enum: ['movies', 'series'] })
+  @ApiProperty({ enum: ['movie', 'series'] })
   @IsString()
   @IsNotEmpty()
   contentType: string;
