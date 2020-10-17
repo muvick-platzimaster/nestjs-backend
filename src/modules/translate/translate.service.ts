@@ -7,7 +7,7 @@ import LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 
 @Injectable()
 export class TranslateService {
-  private translator;
+  private readonly translator: LanguageTranslatorV3;
 
   constructor(private _config: ConfigService) {
     this.translator = new LanguageTranslatorV3({
@@ -17,18 +17,24 @@ export class TranslateService {
       }),
       serviceUrl: _config.get(ConfigEnum.API_URL_IBM_TRANSLATOR),
     });
+    console.log(this.translator);
   }
 
-  async translate(text: string, language= 'en-es'): Promise<void> {
+  async translate(text: string, language = 'en-es'): Promise<LanguageTranslatorV3.Response<LanguageTranslatorV3.TranslationResult>> {
     if (!text) {
       throw new InternalServerErrorException('Bad implementation');
     }
 
     const textTranslated = await this.translator.translate({
-      text: text,
+      text: [text],
       modelId: language,
     });
-
     console.log(textTranslated);
+
+    if (textTranslated) {
+      return textTranslated;
+    }
+
+    throw new InternalServerErrorException('Translation service failed');
   }
 }

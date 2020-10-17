@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
 import { ConfigEnum } from '../../config/config.keys';
 import axios from 'axios';
@@ -19,6 +15,9 @@ import { MovieWatchDto } from './dtos/movie-watch.dto';
 import { MovieResponseDto } from './dtos/movie-response.dto';
 import { queryBuildILike, queryBuildIn } from '../../util/query.build.util';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
+import { TranslateService } from '../translate/translate.service';
+import { TranslationResult } from 'ibm-watson/language-translator/v3';
+import LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 
 @Injectable()
 export class MovieService {
@@ -26,6 +25,7 @@ export class MovieService {
 
   constructor(
     @InjectModel('movie') private _movieModel: Model<Movie>,
+    private readonly _translationService: TranslateService,
     private readonly _myListService: MyListService,
     private readonly utilService: UtilService,
     private readonly _configService: ConfigService,
@@ -47,6 +47,7 @@ export class MovieService {
       .sort({ popularity: -1 })
       .limit(50)
       .exec();
+    console.log(theMovies);
     const response = new MovieResponseDto();
     response.results = theMovies.map(m => plainToClass(MovieDto, m));
     return response;
@@ -64,6 +65,16 @@ export class MovieService {
       })
       .limit(50)
       .exec();
+
+    if (filter.language === 'es') {
+      for (const movie of theMovies) {
+        const translationResponse: LanguageTranslatorV3.Response<TranslationResult> = await this._translationService.translate(movie.overview);
+        if (translationResponse) {
+          movie.overview = translationResponse.result.translations[0].translation;
+        }
+      }
+    }
+
     const response = new MovieResponseDto();
     response.results = theMovies.map(m => plainToClass(MovieDto, m));
     return response;
@@ -87,6 +98,9 @@ export class MovieService {
     return this._myListService.remove(email, theMovie, true);
   }
 
+  /**
+   * Call method performs a request to TMDB
+   * */
   private async call(url: string, filter) {
     const queryParams = this.buildQuery(filter);
     const result = await axios.get(`${this.TMDB_URL}/${url}?${queryParams}`, {

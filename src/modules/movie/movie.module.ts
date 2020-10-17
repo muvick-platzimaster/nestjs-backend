@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MovieSchema } from './schemas/movie.schema';
 import { MyListSchema } from '../my-list/schemas/my-list.schema';
 import { MyListService } from '../my-list/my-list.service';
+import { TranslateModule } from '../translate/translate.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MyListService } from '../my-list/my-list.service';
       { name: 'movie', schema: MovieSchema },
       { name: 'list', schema: MyListSchema },
     ]),
+    TranslateModule
   ],
   controllers: [MovieController],
   providers: [MovieService, ConfigService, MyListService],

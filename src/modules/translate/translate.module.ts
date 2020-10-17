@@ -4,6 +4,7 @@ import { ConfigModule } from '../../config/config.module';
 
 @Module({
   imports: [ConfigModule],
-  providers: [TranslateService]
+  providers: [TranslateService],
+  exports: [TranslateService]
 })
 export class TranslateModule {}
