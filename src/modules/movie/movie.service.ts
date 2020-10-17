@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
 import { ConfigEnum } from '../../config/config.keys';
 import axios from 'axios';
@@ -17,11 +21,15 @@ import { queryBuildILike, queryBuildIn } from '../../util/query.build.util';
 import { MyListDto } from '../my-list/dtos/my-list.dto';
 import { TranslateService } from '../translate/translate.service';
 import { TranslationResult } from 'ibm-watson/language-translator/v3';
+import * as cacheManager from 'cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
 import LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 
 @Injectable()
 export class MovieService {
   private TMDB_URL: string;
+  private redisCache;
+  private redisClient;
 
   constructor(
     @InjectModel('movie') private _movieModel: Model<Movie>,
@@ -31,6 +39,15 @@ export class MovieService {
     private readonly _configService: ConfigService,
   ) {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
+    this.redisCache = cacheManager.caching({
+      store: redisStore,
+      ttl: 86400,
+      host: this._configService.get(ConfigEnum.REDIS_ENDPOINT),
+      port: this._configService.get(ConfigEnum.REDIS_PORT),
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      auth_pass: this._configService.get(ConfigEnum.REDIS_PASSWORD),
+    });
+    this.redisClient = this.redisCache.store.getClient();
   }
 
   findUpcoming(filter?: MovieFilterDto) {
@@ -41,15 +58,38 @@ export class MovieService {
     return this.call('movie/top_rated', filter);
   }
 
-  async findPopular() {
+  async findPopular(language: string) {
     const theMovies = await this._movieModel
       .find()
       .sort({ popularity: -1 })
       .limit(50)
       .exec();
-    console.log(theMovies);
     const response = new MovieResponseDto();
-    response.results = theMovies.map(m => plainToClass(MovieDto, m));
+    if (language === 'es') {
+      const key = await this.redisCache.get('movies:spanish:popular');
+      if (!key) {
+        for (const movie of theMovies) {
+          const translationResponse: LanguageTranslatorV3.Response<TranslationResult> = await this._translationService.translate(
+            movie.overview,
+          );
+          if (translationResponse) {
+            movie.overview =
+              translationResponse.result.translations[0].translation;
+          }
+        }
+        await this.redisCache.set('movies:spanish:popular', theMovies, {
+          ttl: 86400,
+        });
+
+        response.results = theMovies.map(movie =>
+          plainToClass(MovieDto, movie),
+        );
+      } else {
+        response.results = key.map(movie => plainToClass(MovieDto, movie));
+      }
+    } else {
+      response.results = theMovies.map(movie => plainToClass(MovieDto, movie));
+    }
     return response;
   }
 
@@ -66,17 +106,32 @@ export class MovieService {
       .limit(50)
       .exec();
 
+    const response = new MovieResponseDto();
+
     if (filter.language === 'es') {
-      for (const movie of theMovies) {
-        const translationResponse: LanguageTranslatorV3.Response<TranslationResult> = await this._translationService.translate(movie.overview);
-        if (translationResponse) {
-          movie.overview = translationResponse.result.translations[0].translation;
+      const key = await this.redisCache.get('movies:spanish:all');
+      if (!key) {
+        for (const movie of theMovies) {
+          const translationResponse: LanguageTranslatorV3.Response<TranslationResult> = await this._translationService.translate(
+            movie.overview,
+          );
+          if (translationResponse) {
+            movie.overview =
+              translationResponse.result.translations[0].translation;
+          }
         }
+        await this.redisCache.set('movies:spanish:all', theMovies, {
+          ttl: 86400,
+        });
+
+        response.results = theMovies.map(m => plainToClass(MovieDto, m));
+      } else {
+        response.results = key.map(movie => plainToClass(MovieDto, movie));
       }
+    } else {
+      response.results = theMovies.map(m => plainToClass(MovieDto, m));
     }
 
-    const response = new MovieResponseDto();
-    response.results = theMovies.map(m => plainToClass(MovieDto, m));
     return response;
   }
 
@@ -117,6 +172,7 @@ export class MovieService {
       query.push(this.queryString('language', filter.language));
       query.push(this.queryString('page', !filter.page ? 1 : filter.page));
     }
+    console.log(query);
     return query.filter(Boolean).join('&');
   }
 

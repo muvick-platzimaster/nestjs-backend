@@ -16,7 +16,7 @@ import { TranslateModule } from '../translate/translate.module';
       { name: 'movie', schema: MovieSchema },
       { name: 'list', schema: MyListSchema },
     ]),
-    TranslateModule
+    TranslateModule,
   ],
   controllers: [MovieController],
   providers: [MovieService, ConfigService, MyListService],

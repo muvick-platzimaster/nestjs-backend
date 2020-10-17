@@ -1,7 +1,6 @@
 import { HistoryService } from './history.service';
 import { Test } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import sinon = require('sinon');
 import { Model } from 'mongoose';
 
 // Documents
@@ -12,6 +11,7 @@ import { Serie } from '../serie/schemas/serie.schema';
 import { SerieModelMock } from './mocks/serie-model-mock.service';
 import { MovieModelMock } from './mocks/movie-model-mock.service';
 import { HistoryModelMock } from './mocks/history-model-mock.service';
+import sinon = require('sinon');
 
 const payloadMockNotExist = {
   email: 'test@test.com',

@@ -76,7 +76,7 @@ export class MovieController {
   @UseGuards(AuthGuard('jwt'))
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getPopular(@Query('language') language?: string): Promise<MovieResponseDto> {
-    return this._movieService.findPopular();
+    return this._movieService.findPopular(language);
   }
 
   @Get('top-rated')

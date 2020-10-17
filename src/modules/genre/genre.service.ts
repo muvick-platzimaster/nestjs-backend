@@ -19,7 +19,7 @@ export class GenreService {
   }
 
   async findFromMovies(language: GenreRequestDto) {
-    let url = `${this.TMDB_URL}/genre/movie/list`
+    let url = `${this.TMDB_URL}/genre/movie/list`;
 
     if (language) {
       url += `?language=${language}`;
@@ -31,7 +31,7 @@ export class GenreService {
   }
 
   async findFromSeries(language: GenreRequestDto) {
-    let url = `${this.TMDB_URL}/genre/tv/list`
+    let url = `${this.TMDB_URL}/genre/tv/list`;
     if (language) {
       url += `?language=${language}`;
     }

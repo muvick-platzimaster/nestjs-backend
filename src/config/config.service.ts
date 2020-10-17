@@ -26,7 +26,8 @@ export class ConfigService {
         API_URL_IBM_TRANSLATOR: process.env.API_URL_IBM_TRANSLATOR,
         REDIS_PASSWORD: process.env.REDIS_PASSWORD,
         REDIS_DATABASE: process.env.REDIS_DATABASE,
-        REDIS_ENDPOINT: process.env.REDIS_ENDPOINT
+        REDIS_ENDPOINT: process.env.REDIS_ENDPOINT,
+        REDIS_PORT: process.env.REDIS_PORT,
       };
     }
   }

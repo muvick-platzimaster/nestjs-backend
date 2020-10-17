@@ -26,7 +26,7 @@ import { TranslateModule } from './modules/translate/translate.module';
     HistoryModule,
     ScheduleModule.forRoot(),
     TranslateModule,
-  ]
+  ],
 })
 export class AppModule {
   static PORT: number | string;
