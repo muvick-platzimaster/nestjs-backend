@@ -5,6 +5,7 @@ import { ConfigEnum } from '../../config/config.keys';
 import { UtilService } from '../../util/util.service';
 import { plainToClass } from 'class-transformer';
 import { GenreDto } from './dtos/genre.dto';
+import { GenreRequestDto } from './dtos/genre-request.dto';
 
 @Injectable()
 export class GenreService {
@@ -17,15 +18,24 @@ export class GenreService {
     this.TMDB_URL = this._configService.get(ConfigEnum.TMDB_URI);
   }
 
-  async findFromMovies(language ?: string) {
-    const request = await axios.get(`${this.TMDB_URL}/genre/movie/list`, {
+  async findFromMovies(language: GenreRequestDto) {
+    let url = `${this.TMDB_URL}/genre/movie/list`
+
+    if (language) {
+      url += `?language=${language}`;
+    }
+    const request = await axios.get(url, {
       headers: this._utilsService.insertRequestHeaders(),
     });
     return this.transformToDTO(request.data);
   }
 
-  async findFromSeries() {
-    const request = await axios.get(`${this.TMDB_URL}/genre/tv/list`, {
+  async findFromSeries(language: GenreRequestDto) {
+    let url = `${this.TMDB_URL}/genre/tv/list`
+    if (language) {
+      url += `?language=${language}`;
+    }
+    const request = await axios.get(url, {
       headers: this._utilsService.insertRequestHeaders(),
     });
 

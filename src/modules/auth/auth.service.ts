@@ -192,7 +192,7 @@ export class AuthService {
           user.save();
         }
       } catch (err) {
-        console.error(`[Error Sending Verification Code] ${err.mediaDevices}`);
+        console.error(`[Error Sending Verification Code] ${err}`);
         console.error(err.stack);
       }
     }

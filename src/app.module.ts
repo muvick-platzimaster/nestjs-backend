@@ -12,8 +12,6 @@ import { MyListModule } from './modules/my-list/my-list.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HistoryModule } from './modules/history/history.module';
 import { TranslateModule } from './modules/translate/translate.module';
-import { TranslateService } from './translate/translate/translate.service';
-import { TranslateService } from './translate/translate.service';
 
 @Module({
   imports: [
@@ -28,8 +26,7 @@ import { TranslateService } from './translate/translate.service';
     HistoryModule,
     ScheduleModule.forRoot(),
     TranslateModule,
-  ],
-  providers: [TranslateService],
+  ]
 })
 export class AppModule {
   static PORT: number | string;

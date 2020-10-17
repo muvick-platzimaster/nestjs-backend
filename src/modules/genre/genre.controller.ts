@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Param, Query } from '@nestjs/common';
 import { GenreService } from './genre.service';
 import {
   ApiOkResponse,
@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { GenreResponseDto } from './dtos/genre-response.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GenreRequestDto } from './dtos/genre-request.dto';
 
 @ApiTags('The Genres')
 @Controller('genre')
@@ -28,7 +29,8 @@ export class GenreController {
     },
   })
   @UseGuards(AuthGuard('jwt'))
-  async getFromMovie(language?: string): Promise<GenreResponseDto> {
+  async getFromMovie(@Query('language') language: GenreRequestDto): Promise<GenreResponseDto> {
+    console.log(language)
     return this._genreService.findFromMovies(language);
   }
 
@@ -39,7 +41,7 @@ export class GenreController {
     description: 'An array with all the series genre available in our API',
   })
   @UseGuards(AuthGuard('jwt'))
-  async getFromSeries(): Promise<GenreResponseDto> {
-    return this._genreService.findFromSeries();
+  async getFromSeries(@Query('language') language: GenreRequestDto): Promise<GenreResponseDto> {
+    return this._genreService.findFromSeries(language);
   }
 }
